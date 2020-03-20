@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>666</height>
+    <width>1200</width>
+    <height>667</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1000</width>
+    <width>1200</width>
     <height>665</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1000</width>
+    <width>1200</width>
     <height>667</height>
    </size>
   </property>
@@ -49,12 +49,12 @@
      <rect>
       <x>160</x>
       <y>10</y>
-      <width>831</width>
+      <width>1021</width>
       <height>621</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -140,10 +140,10 @@
       <widget class="QTableWidget" name="tableWidget_2">
        <property name="geometry">
         <rect>
-         <x>-4</x>
+         <x>10</x>
          <y>17</y>
-         <width>415</width>
-         <height>533</height>
+         <width>391</width>
+         <height>521</height>
         </rect>
        </property>
        <column>
@@ -180,32 +180,13 @@
       <property name="title">
        <string>管理员</string>
       </property>
-      <widget class="QPushButton" name="pushButton_7">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>0</y>
-         <width>100</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>移除管理员</string>
-       </property>
-      </widget>
       <widget class="QTableWidget" name="tableWidget_3">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>10</x>
          <y>17</y>
-         <width>391</width>
-         <height>114</height>
+         <width>371</width>
+         <height>101</height>
         </rect>
        </property>
        <column>
@@ -220,12 +201,10 @@
        </column>
        <column>
         <property name="text">
-         <string>备注</string>
+         <string>操作</string>
         </property>
        </column>
       </widget>
-      <zorder>tableWidget_3</zorder>
-      <zorder>pushButton_7</zorder>
      </widget>
      <widget class="QGroupBox" name="groupBox_7">
       <property name="geometry">
@@ -239,26 +218,13 @@
       <property name="title">
        <string>白名单</string>
       </property>
-      <widget class="QPushButton" name="pushButton_9">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>0</y>
-         <width>100</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>移出白名单</string>
-       </property>
-      </widget>
       <widget class="QTableWidget" name="tableWidget_4">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>10</x>
          <y>17</y>
-         <width>391</width>
-         <height>114</height>
+         <width>371</width>
+         <height>101</height>
         </rect>
        </property>
        <column>
@@ -273,12 +239,10 @@
        </column>
        <column>
         <property name="text">
-         <string>备注</string>
+         <string>操作</string>
         </property>
        </column>
       </widget>
-      <zorder>tableWidget_4</zorder>
-      <zorder>pushButton_9</zorder>
      </widget>
      <widget class="QGroupBox" name="groupBox_8">
       <property name="geometry">
@@ -292,26 +256,13 @@
       <property name="title">
        <string>黑名单</string>
       </property>
-      <widget class="QPushButton" name="pushButton_15">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>0</y>
-         <width>100</width>
-         <height>32</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>移出黑名单</string>
-       </property>
-      </widget>
       <widget class="QTableWidget" name="tableWidget_5">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>10</x>
          <y>17</y>
-         <width>391</width>
-         <height>114</height>
+         <width>371</width>
+         <height>101</height>
         </rect>
        </property>
        <column>
@@ -326,12 +277,10 @@
        </column>
        <column>
         <property name="text">
-         <string>备注</string>
+         <string>操作</string>
         </property>
        </column>
       </widget>
-      <zorder>tableWidget_5</zorder>
-      <zorder>pushButton_15</zorder>
      </widget>
      <widget class="QGroupBox" name="groupBox_9">
       <property name="geometry">
@@ -357,6 +306,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="label_5">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string>昵称：</string>
           </property>
@@ -387,7 +342,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>40</width>
+            <width>60</width>
             <height>16777215</height>
            </size>
           </property>
@@ -407,12 +362,18 @@
          <x>10</x>
          <y>80</y>
          <width>371</width>
-         <height>81</height>
+         <height>71</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <widget class="QLabel" name="label_8">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string>备注：</string>
           </property>
@@ -432,7 +393,7 @@
          <x>10</x>
          <y>160</y>
          <width>371</width>
-         <height>32</height>
+         <height>28</height>
         </rect>
        </property>
        <property name="text">
