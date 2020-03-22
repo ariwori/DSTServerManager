@@ -1,15 +1,24 @@
 # -*- coding: utf-8 -*-
+import os
+import json
 import qdarkstyle
 import paramiko
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QGroupBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox, QSpacerItem, QSizePolicy, QTableWidget, QAbstractItemView, QTableWidgetItem, QMessageBox, QHeaderView
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QGroupBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox, QSpacerItem, QSizePolicy, QTableWidget, QAbstractItemView, QTableWidgetItem, QMessageBox, QHeaderView, QFileDialog
 from PyQt5.QtCore import Qt
 from serverdialog import ServerDialog
+from clustertab import ClusterTab
+
+USER_HOME = os.path.expandvars('$HOME')
+CONFIG_ROOT_DIR = os.path.join(USER_HOME, ".dstservermanager")
 
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.setupUi()
+        self.initData()
 
+    def setupUi(self):
         # 设置窗体无边框
         # self.setWindowFlags(Qt.FramelessWindowHint)
         # 设置窗口名称
@@ -37,13 +46,15 @@ class MainWindow(QMainWindow):
         # 按钮垂直布局
         top_button_layout = QVBoxLayout(top_left_frame)
         # 五个存档槽按钮
-        cluster_btns = {}
+        self.cluster_btns = {}
         for b_index in range(5):
-            cluster_btns[b_index] = QPushButton(top_left_frame)
-            cluster_btns[b_index].setFixedSize(180, 30)
-            cluster_btns[b_index].setText("存档槽 " + str(b_index + 1))
+            self.cluster_btns[b_index] = QPushButton(top_left_frame)
+            self.cluster_btns[b_index].setFixedSize(180, 30)
+            self.cluster_btns[b_index].setText("存档槽 " + str(b_index + 1))
             # cluster_btns[b_index].setEnabled(False)
-            top_button_layout.addWidget(cluster_btns[b_index])
+            self.cluster_btns[b_index].index = b_index + 1
+            self.cluster_btns[b_index].clicked.connect(self.set_cluster)
+            top_button_layout.addWidget(self.cluster_btns[b_index])
         # 删除存档按钮
         delete_cluster_btn = QPushButton(top_left_frame)
         delete_cluster_btn.setFixedSize(180, 30)
@@ -76,6 +87,7 @@ class MainWindow(QMainWindow):
         settings_btn = QPushButton(bottom_left_frame)
         settings_btn.setText("软件设置")
         settings_btn.setFixedSize(180, 30)
+        settings_btn.clicked.connect(self.soft_settings)
         bottom_button_layout.addWidget(settings_btn)
         # 导出远程存档按钮
         browser_online_server_btn = QPushButton(bottom_left_frame)
@@ -216,6 +228,10 @@ class MainWindow(QMainWindow):
         settings_layout.addWidget(server_settings_groupbox)
         settings_layout.addWidget(self.save_settings_btn)
         settings_widget.setLayout(settings_layout)
+
+        cluster_tab = ClusterTab()
+
+        self.right_layout.addWidget(cluster_tab)
         self.right_layout.addWidget(settings_widget)
 
         # 划分界面
@@ -242,23 +258,58 @@ class MainWindow(QMainWindow):
         self.delete_server_btn.clicked.connect(self.delete_server)
         self.edit_server_btn.clicked.connect(self.edit_server)
         self.test_server_btn.clicked.connect(self.test_server)
+        self.save_settings_btn.clicked.connect(self.save_settings_data)
+        self.local_server_path_btn.clicked.connect(self.select_server_dir)
+        self.local_cluster_path_btn.clicked.connect(self.select_cluster_dir)
+        self.local_client_path_btn.clicked.connect(self.select_client_dir)
+
+    def soft_settings(self):
+        self.right_layout.setCurrentIndex(1)
+
+    # 存档按钮状态刷新
+    def refresh_cluster_btn_state(self, index):
+        for i in self.cluster_btns:
+            if index == self.cluster_btns[i].index:
+                self.cluster_btns[i].setEnabled(False)
+            else:
+                self.cluster_btns[i].setEnabled(True)
+
+    # 存档设置
+    def set_cluster(self):
+        self.current_cluster_index = self.sender().index
+        self.refresh_cluster_btn_state(self.current_cluster_index)
+        self.right_layout.setCurrentIndex(0)
 
     # 添加新服务器
     def add_new_server(self):
         self.server_table.clearSelection()
-        serverDialog = ServerDialog(self)
-        serverDialog.setWindowTitle("添加服务器")
-        serverDialog.serverSignal.connect(self.add_server)
-        serverDialog.exec()
+        self.serverDialog = ServerDialog(self)
+        self.serverDialog.setWindowTitle("添加服务器")
+        self.serverDialog.serverSignal.connect(self.add_server)
+        self.serverDialog.exec()
+
+    def is_server_not_exist(self, ip):
+        serverlist = self.get_server_list()
+        for server in serverlist:
+            if ip == server[1]:
+                return False
+        return True
 
     def add_server(self, server):
+        flag = True
         server_row_num = self.server_table.currentRow()
         if server_row_num == -1:
-            server_row_num = self.server_table.rowCount()
-            self.server_table.setRowCount(server_row_num + 1)
-        for col in range(5):
-            self.server_table.setItem(server_row_num, col, QTableWidgetItem(server[col]))
-            self.server_table.item(server_row_num, col).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            if self.is_server_not_exist(server[1]):
+                server_row_num = self.server_table.rowCount()
+                self.server_table.setRowCount(server_row_num + 1)
+            else:
+                QMessageBox.warning(self, "警告", "服务器已存在！", QMessageBox.Yes)
+                flag = False
+        if flag:
+            self.serverDialog.hide()
+            for col in range(5):
+                self.server_table.setItem(server_row_num, col, QTableWidgetItem(server[col]))
+                self.server_table.item(server_row_num, col).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
     def edit_server(self):
         row = self.server_table.currentRow()
@@ -302,6 +353,99 @@ class MainWindow(QMainWindow):
                 ssh.close()
         else:
             QMessageBox.warning(self, "警告", "你没有选中服务器！", QMessageBox.Yes)
+
+    def read_json_data(self, filename):
+        jsonfile = os.path.join(CONFIG_ROOT_DIR, filename)
+        if os.path.exists(jsonfile):
+            with open(jsonfile, 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+        return data
+
+    def write_json_data(self, filename, data):
+        if not os.path.exists(CONFIG_ROOT_DIR):
+            os.mkdir(CONFIG_ROOT_DIR)
+        jsonfile = os.path.join(CONFIG_ROOT_DIR, filename)
+        with open(jsonfile, 'w') as f:
+            json.dump(data, f)
+
+    def init_cluster_data(self, index):
+        self.right_layout.setCurrentIndex(0)
+        self.refresh_cluster_btn_state(self.current_cluster_index)
+
+    def initData(self):
+        self.init_settings_data()
+        self.current_cluster_index = 1
+        self.init_cluster_data(self.current_cluster_index)
+
+    # 初始化设置
+    def init_settings_data(self):
+        settings = self.read_json_data('settings.json')
+        if settings:
+            self.local_client_path_lineEdit.setText(settings['localclientpath'])
+            self.local_server_path_lineEdit.setText(settings['localserverpath'])
+            self.local_cluster_path_lineEdit.setText(settings['localclusterpath'])
+            self.sc_key_lineEdit.setText(settings['sckey'])
+            self.sc_enable_checkBox.setChecked(settings['scenable'])
+            self.server_token_lineEdit.setText(settings['servertoken'])
+            self.set_server_list(settings['servers'])
+
+    def get_server_list(self):
+        list = []
+        rowCount = self.server_table.rowCount()
+        for row in range(rowCount):
+            list.append([self.server_table.item(row, 0).text(),
+                        self.server_table.item(row, 1).text(),
+                        self.server_table.item(row, 2).text(),
+                        self.server_table.item(row, 3).text(),
+                        self.server_table.item(row, 4).text()])
+        return list
+
+    def set_server_list(self, serverlist):
+        row = self.server_table.rowCount()
+        for list in serverlist:
+            self.server_table.setRowCount(row + 1)
+            self.server_table.setItem(row, 0, QTableWidgetItem(list[0]))
+            self.server_table.setItem(row, 1, QTableWidgetItem(list[1]))
+            self.server_table.setItem(row, 2, QTableWidgetItem(list[2]))
+            self.server_table.setItem(row, 3, QTableWidgetItem(list[3]))
+            self.server_table.setItem(row, 4, QTableWidgetItem(list[4]))
+            self.server_table.item(row, 0).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.server_table.item(row, 1).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.server_table.item(row, 2).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.server_table.item(row, 3).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.server_table.item(row, 4).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            row += 1
+
+    # 保存设置
+    def save_settings_data(self):
+        settings = {}
+        settings['localclientpath'] = self.local_client_path_lineEdit.text()
+        settings['localserverpath'] = self.local_server_path_lineEdit.text()
+        settings['localclusterpath'] = self.local_cluster_path_lineEdit.text()
+        settings['sckey'] = self.sc_key_lineEdit.text()
+        settings['scenable'] = self.sc_enable_checkBox.isChecked()
+        settings['servertoken'] = self.server_token_lineEdit.text()
+        settings['servers'] = self.get_server_list()
+        self.write_json_data('settings.json', settings)
+
+    def select_client_dir(self):
+        client_dir = QFileDialog.getExistingDirectory(self, "选择本地客户端路径", USER_HOME)
+        self.local_client_path_lineEdit.setText(str(client_dir))
+
+    def select_cluster_dir(self):
+        cluster_dir = QFileDialog.getExistingDirectory(self, "选择本地存档路径", USER_HOME)
+        # 官方存档路径
+        cluster = os.path.join(USER_HOME, 'Documents', 'Klei', 'DoNotStarveTogether')
+        if cluster_dir != cluster:
+            self.local_cluster_path_lineEdit.setText(str(cluster_dir))
+        else:
+            QMessageBox(self, "警告", "不可选择和官方相同的路径", QMessageBox.Yes)
+
+    def select_server_dir(self):
+        server_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+        self.local_server_path_lineEdit.setText(str(server_dir))
 
     # 设置窗口居中
     def center(self):

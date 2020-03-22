@@ -99,9 +99,6 @@ class ServerDialog(QDialog):
             button = QMessageBox.information(self, "连接正确", "服务器连接测试通过!\n是否保存新的服务器？", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if button == QMessageBox.Yes:
                 self.serverSignal.emit([name, ip, username, password, tips])
-                self.hide()
-            else:
-                return
         except Exception as e:
             QMessageBox.critical(self, "连接错误", str(e), QMessageBox.Yes)
         finally:

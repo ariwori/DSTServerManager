@@ -1,0 +1,51 @@
+{
+    "description": "\n咕咕咕咕咕\n非常感谢好友 逆行人生帮忙测试mod\n谢谢羽中画了这么好看的贴图\n感谢那些帮我解决代码问题提供思路的各位大佬\n\n如果游戏中使用了不正常的传送之类的导致视角锁定之类的情况出现\n可以 输入指令   /c_resethouse 来恢复视野\n\n谢谢你们！\n咕咕咕咕咕\n",
+    "configuration_options": [
+        {
+            "hover": "Language/语言",
+            "name": "HouseLanguage",
+            "label": "Language/语言",
+            "default": true,
+            "options": [
+                { "description": "English", "data": true },
+                { "description": "中文", "data": false }
+            ]
+        },
+        {
+            "hover": "Can be Hammered/是否可以被锤",
+            "name": "HouseHammered",
+            "label": "CanbeHammered",
+            "default": true,
+            "options": [
+                { "description": "Yes(可以)", "data": true },
+                { "description": "No(不可以)", "data": false }
+            ]
+        },
+        {
+            "hover": "Wall Skins/地板和墙壁皮肤",
+            "name": "NewWalls",
+            "label": "Wall Skins",
+            "default": true,
+            "options": [
+                { "description": "Yes(有)", "data": true },
+                { "description": "No(没有)", "data": false }
+            ]
+        }
+    ],
+    "reign_of_giants_compatible": false,
+    "dst_compatible": true,
+    "dont_starve_compatible": false,
+    "priority": -1,
+    "icon": "modicon.tex",
+    "modid": "workshop-1951468597",
+    "all_clients_require_mod": true,
+    "author": "羽中,小班花",
+    "name": "Mushroom House",
+    "icon_atlas": "modicon.xml",
+    "fuc": "list",
+    "api_version": 10,
+    "used": "true",
+    "server_filter_tags": ["xiaobanhua"],
+    "version": "2.4",
+    "forumthread": ""
+}
