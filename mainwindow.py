@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         # 最开始窗口要居中显示
         self.center()
         # 设置窗口透明度
-        self.setWindowOpacity(0.9)
+        # self.setWindowOpacity(0.9)
         # 设置窗口样式
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         # 设置整体布局 左右显示
@@ -121,7 +121,7 @@ class MainWindow(QMainWindow):
         path_widget1_layout = QHBoxLayout()
         local_client_path_label = QLabel()
         local_client_path_label.setText("本地客户端路径:")
-        local_client_path_label.setFixedWidth(105)
+        # local_client_path_label.setFixedWidth(105)
         self.local_client_path_lineEdit = QLineEdit()
         self.local_client_path_btn = QPushButton()
         self.local_client_path_btn.setText("浏览")
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         path_widget2_layout = QHBoxLayout()
         local_server_path_label = QLabel()
         local_server_path_label.setText("本地服务端路径:")
-        local_server_path_label.setFixedWidth(105)
+        # local_server_path_label.setFixedWidth(105)
         self.local_server_path_lineEdit = QLineEdit()
         self.local_server_path_btn = QPushButton()
         self.local_server_path_btn.setText("浏览")
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         path_widget3_layout = QHBoxLayout()
         local_cluster_path_label = QLabel()
         local_cluster_path_label.setText("本地存档路径:")
-        local_cluster_path_label.setFixedWidth(105)
+        # local_cluster_path_label.setFixedWidth(105)
         self.local_cluster_path_lineEdit = QLineEdit()
         self.local_cluster_path_btn = QPushButton()
         self.local_cluster_path_btn.setText("浏览")
@@ -298,6 +298,7 @@ class MainWindow(QMainWindow):
     def add_server(self, server):
         flag = True
         server_row_num = self.server_table.currentRow()
+        print(server_row_num)
         if server_row_num == -1:
             if self.is_server_not_exist(server[1]):
                 server_row_num = self.server_table.rowCount()
