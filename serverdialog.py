@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import qdarkstyle
+# import qdarkstyle
 from PyQt5.QtWidgets import QDialog, QFrame, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 import paramiko
@@ -13,9 +13,9 @@ class ServerDialog(QDialog):
     def __init__(self, parent=None):
         super(ServerDialog, self).__init__(parent)
         # 设置窗口透明度
-        self.setWindowOpacity(0.9)
+        # self.setWindowOpacity(0.9)
         # 设置窗口样式
-        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        # self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         self.setFixedSize(300, 230)
 
         frame = QFrame(self)

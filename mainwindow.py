@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         # 最开始窗口要居中显示
         self.center()
         # 设置窗口透明度
-        self.setWindowOpacity(0.9)
+        # self.setWindowOpacity(0.9)
         # 设置窗口样式
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         # 设置整体布局 左右显示
@@ -270,9 +270,9 @@ class MainWindow(QMainWindow):
     def refresh_cluster_btn_state(self, index):
         for i in self.cluster_btns:
             if index == self.cluster_btns[i].index:
-                self.cluster_btns[i].setEnabled(False)
+                self.cluster_btns[i].setStyleSheet("")
             else:
-                self.cluster_btns[i].setEnabled(True)
+                self.cluster_btns[i].setStyleSheet("color:gray")
 
     # 存档设置
     def set_cluster(self):
