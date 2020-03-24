@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLabel, QFrame, QLineEdit, QTabWidget, QFormLayout, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QFrame, QLineEdit, QTabWidget, QFormLayout, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
 from PyQt5.QtGui import QIntValidator
 
 
@@ -40,6 +40,8 @@ class ClusterTab(QTabWidget):
         description_label = QLabel()
         description_label.setText('房间简介:')
         self.cluster_description = QLineEdit()
+        self.cluster_name.setText("南风颂的饥荒世界")
+        self.cluster_description.setText("由饥荒联机版服务器管理工具开设！")
         layout1.addWidget(name_label)
         layout1.addWidget(self.cluster_name)
         layout2.addWidget(description_label)
@@ -71,14 +73,15 @@ class ClusterTab(QTabWidget):
         label5.setText("游戏语言:")
         label5.setFixedWidth(70)
         self.game_language = QButtonGroup()
-        en_rbtn = QRadioButton('英语')
-        en_rbtn.setFixedWidth(70)
-        zh_rbtn = QRadioButton('简体中文')
-        self.game_language.addButton(en_rbtn, 1)
-        self.game_language.addButton(zh_rbtn, 2)
+        self.en_rbtn = QRadioButton('英语')
+        self.en_rbtn.setFixedWidth(70)
+        self.zh_rbtn = QRadioButton('简体中文')
+        self.game_language.addButton(self.en_rbtn, 1)
+        self.game_language.addButton(self.zh_rbtn, 2)
+        self.zh_rbtn.setChecked(True)
         layout6.addWidget(label5)
-        layout6.addWidget(en_rbtn)
-        layout6.addWidget(zh_rbtn)
+        layout6.addWidget(self.en_rbtn)
+        layout6.addWidget(self.zh_rbtn)
 
         layout7 = QHBoxLayout()
         label6 = QLabel()
@@ -94,7 +97,9 @@ class ClusterTab(QTabWidget):
         layout8 = QHBoxLayout()
         self.pvp = QCheckBox("开启PVP竞技")
         self.pause_when_empty = QCheckBox("开启无人暂停")
+        self.pause_when_empty.setChecked(True)
         self.vote = QCheckBox('开启玩家投票')
+        self.vote.setChecked(True)
         layout8.addWidget(self.pvp)
         layout8.addWidget(self.pause_when_empty)
         layout8.addWidget(self.vote)
@@ -103,17 +108,42 @@ class ClusterTab(QTabWidget):
         label7 = QLabel()
         label7.setText('最大玩家人数:')
         self.max_players = QLineEdit()
+        self.max_players.setText("0")
         p = QIntValidator(self.max_players)
         p.setRange(1, 64)
         self.max_players.setValidator(p)
         label8 = QLabel()
         label8.setText('房间预留位置个数:')
         self.white_players = QLineEdit()
+        self.white_players.setText("0")
         self.white_players.setValidator(p)
         layout9.addWidget(label7)
         layout9.addWidget(self.max_players)
         layout9.addWidget(label8)
         layout9.addWidget(self.white_players)
+
+        layout10 = QHBoxLayout()
+        label9 = QLabel()
+        label9.setText("房间密码:")
+        self.password = QLineEdit()
+        layout10.addWidget(label9)
+        layout10.addWidget(self.password)
+
+        layout11 = QHBoxLayout()
+        label10 = QLabel()
+        label10.setText("主世界IP:")
+        self.masterip = QLineEdit()
+        self.masterip.setText("127.0.0.1")
+        layout11.addWidget(label10)
+        layout11.addWidget(self.masterip)
+
+        layout12 = QHBoxLayout()
+        self.load_default_cluster_settings = QPushButton()
+        self.load_default_cluster_settings.setText("载入默认设置")
+        self.save_cluster_setttings = QPushButton()
+        self.save_cluster_setttings.setText("保存房间设置")
+        layout12.addWidget(self.load_default_cluster_settings)
+        layout12.addWidget(self.save_cluster_setttings)
 
         layout.addLayout(layout1)
         layout.addLayout(layout2)
@@ -124,9 +154,32 @@ class ClusterTab(QTabWidget):
         layout.addLayout(layout7)
         layout.addLayout(layout8)
         layout.addLayout(layout9)
+        layout.addLayout(layout10)
+        layout.addLayout(layout11)
+        layout.addLayout(layout12)
         # # 设置选项卡的小标题与布局方式
         self.setTabText(0, '房间设置')
         self.cluster_settings_tab.setLayout(layout)
+
+        self.load_default_cluster_settings.clicked.connect(self.setDefaultCluster)
+
+    def setDefaultCluster(self):
+        self.cluster_name.setText("南风颂的饥荒世界")
+        self.cluster_description.setText("由饥荒联机版服务器管理工具开设！")
+        self.cluster_intention.setCurrentIndex(0)
+        self.game_mode.setCurrentIndex(0)
+        self.zh_rbtn.setChecked(True)
+        self.pause_when_empty.setChecked(True)
+        self.vote.setChecked(True)
+        self.max_players.setText("0")
+        self.white_players = QLineEdit()
+        self.white_players.setText("0")
+        self.password.setText("")
+        self.masterip.setText("127.0.0.1")
+        self.steam_group_id.setText("")
+        self.steam_group_only.setChecked(False)
+        self.steam_group_admin.setChecked(False)
+        self.pvp.setChecked(False)
 
     def tab2UI(self):
         # zhu表单布局，次水平布局
@@ -142,7 +195,7 @@ class ClusterTab(QTabWidget):
         layout.addRow('生日', QLineEdit())
 
         # 设置标题与布局
-        self.setTabText(1, '个人详细信息')
+        self.setTabText(1, '世界设置')
         self.shard_settings_tab.setLayout(layout)
 
     def tab3UI(self):
@@ -155,5 +208,5 @@ class ClusterTab(QTabWidget):
         layout.addWidget(QCheckBox('高数'))
 
         # 设置小标题与布局方式
-        self.setTabText(2, '教育程度')
+        self.setTabText(2, 'MOD设置')
         self.mods_settings_tab.setLayout(layout)
