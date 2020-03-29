@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QFrame, QLineEdit, QTabWidget, QFormLayout, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QTabWidget, QFormLayout, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
+from globalvar import CONFIG_DIR
+import os
+from config import GlobalConfig
 
 
 class ClusterTab(QTabWidget):
@@ -52,11 +54,15 @@ class ClusterTab(QTabWidget):
         self.cluster_intention = QComboBox()
         self.cluster_intention.setItemDelegate(QStyledItemDelegate())
         self.cluster_intention.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }")
-        self.cluster_intention.addItems(['休闲', '合作', '竞赛', '疯狂'])
+        self.cluster_intention_cn = ['休闲', '合作', '竞赛', '疯狂']
+        self.cluster_intention_value = ['social', 'cooperative', 'competitive', 'madness']
+        self.cluster_intention.addItems(self.cluster_intention_cn)
         self.game_mode = QComboBox()
         self.game_mode.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }")
         self.game_mode.setItemDelegate(QStyledItemDelegate())
-        self.game_mode.addItems(['无尽', '生存', '荒野', '熔炉', '暴食'])
+        self.game_mode_cn = ['无尽', '生存', '荒野', '熔炉', '暴食']
+        self.game_mode_value = ['endless', 'survival', 'wilderness', 'lavaarena', 'quagmire']
+        self.game_mode.addItems(self.game_mode_cn)
         label3 = QLabel()
         label3.setText('游戏风格:')
         label3.setFixedWidth(70)
@@ -109,14 +115,10 @@ class ClusterTab(QTabWidget):
         label7.setText('最大玩家人数:')
         self.max_players = QLineEdit()
         self.max_players.setText("0")
-        p = QIntValidator(self.max_players)
-        p.setRange(1, 64)
-        self.max_players.setValidator(p)
         label8 = QLabel()
         label8.setText('房间预留位置个数:')
         self.white_players = QLineEdit()
         self.white_players.setText("0")
-        self.white_players.setValidator(p)
         layout9.addWidget(label7)
         layout9.addWidget(self.max_players)
         layout9.addWidget(label8)
@@ -140,9 +142,12 @@ class ClusterTab(QTabWidget):
         layout12 = QHBoxLayout()
         self.load_default_cluster_settings = QPushButton()
         self.load_default_cluster_settings.setText("载入默认设置")
+        self.set_default_cluster_settings = QPushButton()
+        self.set_default_cluster_settings.setText("保存为默认设置")
         self.save_cluster_setttings = QPushButton()
         self.save_cluster_setttings.setText("保存房间设置")
         layout12.addWidget(self.load_default_cluster_settings)
+        layout12.addWidget(self.set_default_cluster_settings)
         layout12.addWidget(self.save_cluster_setttings)
 
         layout.addLayout(layout1)
@@ -161,25 +166,9 @@ class ClusterTab(QTabWidget):
         self.setTabText(0, '房间设置')
         self.cluster_settings_tab.setLayout(layout)
 
-        self.load_default_cluster_settings.clicked.connect(self.setDefaultCluster)
-
-    def setDefaultCluster(self):
-        self.cluster_name.setText("南风颂的饥荒世界")
-        self.cluster_description.setText("由饥荒联机版服务器管理工具开设！")
-        self.cluster_intention.setCurrentIndex(0)
-        self.game_mode.setCurrentIndex(0)
-        self.zh_rbtn.setChecked(True)
-        self.pause_when_empty.setChecked(True)
-        self.vote.setChecked(True)
-        self.max_players.setText("0")
-        self.white_players = QLineEdit()
-        self.white_players.setText("0")
-        self.password.setText("")
-        self.masterip.setText("127.0.0.1")
-        self.steam_group_id.setText("")
-        self.steam_group_only.setChecked(False)
-        self.steam_group_admin.setChecked(False)
-        self.pvp.setChecked(False)
+        self.load_default_cluster_settings.clicked.connect(self.read_default_cluster_data)
+        self.set_default_cluster_settings.clicked.connect(self.write_to_default_cluster_data)
+        self.save_cluster_setttings.clicked.connect(self.write_curret_cluster_data)
 
     def tab2UI(self):
         # zhu表单布局，次水平布局
@@ -210,3 +199,112 @@ class ClusterTab(QTabWidget):
         # 设置小标题与布局方式
         self.setTabText(2, 'MOD设置')
         self.mods_settings_tab.setLayout(layout)
+
+    def read_default_cluster_data(self):
+        file = os.path.join(CONFIG_DIR, "cluster.ini")
+        self.read_cluster_data(file)
+
+    def write_to_default_cluster_data(self):
+        file = os.path.join(CONFIG_DIR, "cluster.ini")
+        self.write_cluster_data(file)
+
+    def write_curret_cluster_data(self):
+        self.write_cluster_data(self.current_cluster_file)
+
+    def write_cluster_data(self, file):
+        self.cluster_config.set("STEAM", "steam_group_id", self.steam_group_id.text())
+        self.cluster_config.setboolen("STEAM", "steam_group_only", self.steam_group_only.isChecked())
+        self.cluster_config.setboolen("STEAM", "steam_group_admins", self.steam_group_admin.isChecked())
+
+        self.cluster_config.setboolen("GAMEPLAY", "pvp", self.pvp.isChecked())
+        self.cluster_config.set("GAMEPLAY", "game_mode", self.game_mode_value[self.game_mode.currentIndex()])
+        self.cluster_config.setboolen("GAMEPLAY", "pause_when_empty", self.pause_when_empty.isChecked())
+        self.cluster_config.setboolen("GAMEPLAY", "vote_enabled", self.vote.isChecked())
+        self.cluster_config.set("GAMEPLAY", "max_players", self.max_players.text())
+
+        self.cluster_config.set("NETWORK", "cluster_name", self.cluster_name.text())
+        self.cluster_config.set("NETWORK", "cluster_description", self.cluster_description.text())
+        self.cluster_config.set("NETWORK", "cluster_intention", self.cluster_intention_value[self.cluster_intention.currentIndex()])
+        if self.zh_rbtn.isChecked():
+            lang = "zh"
+        else:
+            lang = "en"
+        self.cluster_config.set("NETWORK", "cluster_language", lang)
+        self.cluster_config.set("NETWORK", "whitelist_slots", self.white_players.text())
+        self.cluster_config.set("NETWORK", "cluster_password", self.password.text())
+
+        self.cluster_config.set("SHARD", "master_ip", self.masterip.text())
+
+        self.cluster_config.save(file)
+
+    def read_current_cluster_data(self):
+        self.read_cluster_data(self.current_cluster_file)
+
+    def read_cluster_data(self, file):
+        if not os.path.exists(file):
+            file = os.path.join(CONFIG_DIR, "cluster.ini")
+            if not os.path.exists(file):
+                data = """[STEAM]
+steam_group_id = 0
+steam_group_admins = false
+steam_group_only = false
+
+[GAMEPLAY]
+game_mode = survival
+pause_when_empty = true
+vote_enabled = true
+pvp = false
+max_players = 6
+
+[NETWORK]
+cluster_name = 由脚本dstserver.sh创建！
+cluster_description = 由脚本dstserver.sh创建！
+cluster_intention = social
+cluster_language = zh
+whitelist_slots = 0
+idle_timeout = 0
+cluster_password =
+lan_only_cluster = false
+offline_cluster = false
+autosaver_enabled = true
+tick_rate = 15
+
+[MISC]
+max_snapshots = 10
+console_enabled = true
+
+[SHARD]
+master_ip = 127.0.0.1
+shard_enabled = true
+bind_ip = 0.0.0.0
+master_port = 10888
+cluster_key = Tendy2020"""
+                try:
+                    f = open(file, 'a', encoding='utf-8')
+                    f.write(data)
+                    f.close()
+                except ImportError:
+                    pass
+
+        self.cluster_config = GlobalConfig(file)
+        self.steam_group_id.setText(self.cluster_config.get("STEAM", "steam_group_id"))
+        self.steam_group_only.setChecked(self.cluster_config.getboolean("STEAM", "steam_group_only"))
+        self.steam_group_admin.setChecked(self.cluster_config.getboolean("STEAM", "steam_group_admins"))
+
+        self.pvp.setChecked(self.cluster_config.getboolean("GAMEPLAY", "pvp"))
+        self.game_mode.setCurrentIndex(self.game_mode_value.index(self.cluster_config.get("GAMEPLAY", "game_mode")))
+        self.pause_when_empty.setChecked(self.cluster_config.getboolean("GAMEPLAY", "pause_when_empty"))
+        self.vote.setChecked(self.cluster_config.getboolean("GAMEPLAY", "vote_enabled"))
+        self.max_players.setText(self.cluster_config.get("GAMEPLAY", "max_players"))
+
+        self.cluster_name.setText(self.cluster_config.get("NETWORK", "cluster_name"))
+        self.cluster_description.setText(self.cluster_config.get("NETWORK", "cluster_description"))
+        self.cluster_intention.setCurrentIndex(self.cluster_intention_value.index(self.cluster_config.get("NETWORK", "cluster_intention")))
+        if self.cluster_config.get("NETWORK", "cluster_language") == "zh":
+            self.zh_rbtn.setChecked(True)
+        else:
+            self.en_rbtn.setChecked(True)
+        self.white_players.setText(self.cluster_config.get("NETWORK", "whitelist_slots"))
+        self.password.setText(self.cluster_config.get("NETWORK", "cluster_password"))
+
+        self.masterip.setText(self.cluster_config.get("SHARD", "master_ip"))
