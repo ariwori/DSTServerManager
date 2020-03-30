@@ -1,0 +1,19 @@
+-- file : test2-load.txt
+-- this is a file for testing
+{                                   -- comment 1
+    ["array" --[[comment 2]]]= {65,23,5},
+    ["dict"]= {
+        ["mixed"]= {
+            [1]= 43,
+            [2]= 54.33, --[=[comment 3 :
+                multiple-line
+                ]]=]
+            [3]= false,
+            [4]= 9--[==[[[comment 4]]]==],
+            ["string"]= "value --[[comment ?]]",
+            [ [[xstring]]] = [[value]]
+        },
+        ["array"]= {3,6,4 --[===[comment 5]===],},
+        ["string"]= "value"
+    }
+}
