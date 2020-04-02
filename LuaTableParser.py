@@ -589,7 +589,7 @@ class LuaTableParser:
     def __eval_esc_seq(self, c):
         esc_seq_table = {'a': '\a', 'b': '\b', 'f': '\f', 'n': '\n',
                          'r': '\r', 't': '\t', 'v': '\v'}
-        if esc_seq_table.has_key(c):
+        if c in esc_seq_table:
             return esc_seq_table[c]
         elif c in '\\\'\"[]':
             return c
@@ -598,7 +598,7 @@ class LuaTableParser:
     def __dump_char(self, c):
         esc_seq_table = {'\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n',
                          '\r': 'r', '\t': 't', '\v': 'v'}
-        if esc_seq_table.has_key(c):
+        if c in esc_seq_table:
             return '\\' + esc_seq_table[c]
         elif c in '\\\'\"[]':
             return '\\' + c

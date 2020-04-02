@@ -3,9 +3,10 @@ import os
 import qdarkstyle
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt
-from clustertab import ClusterTab
+from maintab import MainTab
 from settingswindow import SettingsWidget
-from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR
+from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR, TEMP_FILE
+from config import GlobalConfig
 
 
 class MainWindow(QMainWindow):
@@ -24,7 +25,7 @@ class MainWindow(QMainWindow):
         self.status.showMessage("我是状态栏，用于显示程序运行信息！")
         # 设置初始化的窗口大小
         self.setMinimumWidth(800)
-        self.resize(1000, 600)
+        self.resize(1130, 700)
         # 最开始窗口要居中显示
         self.center()
         # 设置窗口透明度
@@ -109,7 +110,7 @@ class MainWindow(QMainWindow):
         self.right_layout = QStackedLayout(right_frame)
 
         self.settings_widget = SettingsWidget()
-        self.cluster_tab = ClusterTab()
+        self.cluster_tab = MainTab()
         self.right_layout.addWidget(self.cluster_tab)
         self.right_layout.addWidget(self.settings_widget)
 
@@ -148,11 +149,13 @@ class MainWindow(QMainWindow):
     # 存档设置
     def set_cluster(self):
         self.current_cluster_index = self.sender().index
+        self.tempconfig.set("TEMP", "cluster_index", str(self.current_cluster_index))
+        self.tempconfig.save(TEMP_FILE)
         self.refresh_cluster_btn_state(self.current_cluster_index)
         self.right_layout.setCurrentIndex(0)
         self.mk_cluster_dir()
-        self.cluster_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-        self.cluster_tab.read_cluster_data(self.cluster_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
+        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
 
     def mk_cluster_dir(self):
         self.current_cluster_folder = os.path.join(CLUSTER_DIR, "Cluster_" + str(self.current_cluster_index))
@@ -163,8 +166,8 @@ class MainWindow(QMainWindow):
         self.mk_cluster_dir()
         self.right_layout.setCurrentIndex(0)
         self.refresh_cluster_btn_state(self.current_cluster_index)
-        self.cluster_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-        self.cluster_tab.read_cluster_data(self.cluster_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
+        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
 
     def initDir(self):
         if not os.path.exists(ROOT_DIR):
@@ -176,7 +179,8 @@ class MainWindow(QMainWindow):
 
     def initData(self):
         self.initDir()
-        self.current_cluster_index = 1
+        self.tempconfig = GlobalConfig(TEMP_FILE)
+        self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
         self.init_cluster_data(self.current_cluster_index)
 
     # 设置窗口居中

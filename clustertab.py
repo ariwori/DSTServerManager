@@ -1,38 +1,16 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QTabWidget, QFormLayout, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
 from globalvar import CONFIG_DIR
 import os
 from config import GlobalConfig
 
 
-class ClusterTab(QTabWidget):
+class ClusterWidget(QWidget):
 
     def __init__(self, parent=None):
-        super(ClusterTab, self).__init__(parent)
-        # 设置窗口透明度
-        # self.setWindowOpacity(0.9)
-        # 设置窗口样式
-        # self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        super(ClusterWidget, self).__init__(parent)
 
-        # 创建3个选项卡小控件窗口
-        self.cluster_settings_tab = QWidget()
-        self.shard_settings_tab = QWidget()
-        self.mods_settings_tab = QWidget()
-
-        # 将三个选项卡添加到顶层窗口中
-        self.addTab(self.cluster_settings_tab, "Tab 1")
-        self.addTab(self.shard_settings_tab, "Tab 2")
-        self.addTab(self.mods_settings_tab, "Tab 3")
-
-        # 每个选项卡自定义的内容
-        self.tab1UI()
-        self.tab2UI()
-        self.tab3UI()
-
-    # 房间设置
-    def tab1UI(self):
-        # 表单布局
         layout = QVBoxLayout()
         layout1 = QHBoxLayout()
         layout2 = QHBoxLayout()
@@ -162,43 +140,12 @@ class ClusterTab(QTabWidget):
         layout.addLayout(layout10)
         layout.addLayout(layout11)
         layout.addLayout(layout12)
-        # # 设置选项卡的小标题与布局方式
-        self.setTabText(0, '房间设置')
-        self.cluster_settings_tab.setLayout(layout)
+
+        self.setLayout(layout)
 
         self.load_default_cluster_settings.clicked.connect(self.read_default_cluster_data)
         self.set_default_cluster_settings.clicked.connect(self.write_to_default_cluster_data)
         self.save_cluster_setttings.clicked.connect(self.write_curret_cluster_data)
-
-    def tab2UI(self):
-        # zhu表单布局，次水平布局
-        layout = QFormLayout()
-        sex = QHBoxLayout()
-
-        # 水平布局添加单选按钮
-        sex.addWidget(QRadioButton('男'))
-        sex.addWidget(QRadioButton('女'))
-
-        # 表单布局添加控件
-        layout.addRow(QLabel('性别'), sex)
-        layout.addRow('生日', QLineEdit())
-
-        # 设置标题与布局
-        self.setTabText(1, '世界设置')
-        self.shard_settings_tab.setLayout(layout)
-
-    def tab3UI(self):
-        # 水平布局
-        layout = QHBoxLayout()
-
-        # 添加控件到布局中
-        layout.addWidget(QLabel('科目'))
-        layout.addWidget(QCheckBox('物理'))
-        layout.addWidget(QCheckBox('高数'))
-
-        # 设置小标题与布局方式
-        self.setTabText(2, 'MOD设置')
-        self.mods_settings_tab.setLayout(layout)
 
     def read_default_cluster_data(self):
         file = os.path.join(CONFIG_DIR, "cluster.ini")
@@ -243,48 +190,6 @@ class ClusterTab(QTabWidget):
     def read_cluster_data(self, file):
         if not os.path.exists(file):
             file = os.path.join(CONFIG_DIR, "cluster.ini")
-            if not os.path.exists(file):
-                data = """[STEAM]
-steam_group_id = 0
-steam_group_admins = false
-steam_group_only = false
-
-[GAMEPLAY]
-game_mode = survival
-pause_when_empty = true
-vote_enabled = true
-pvp = false
-max_players = 6
-
-[NETWORK]
-cluster_name = 由脚本dstserver.sh创建！
-cluster_description = 由脚本dstserver.sh创建！
-cluster_intention = social
-cluster_language = zh
-whitelist_slots = 0
-idle_timeout = 0
-cluster_password =
-lan_only_cluster = false
-offline_cluster = false
-autosaver_enabled = true
-tick_rate = 15
-
-[MISC]
-max_snapshots = 10
-console_enabled = true
-
-[SHARD]
-master_ip = 127.0.0.1
-shard_enabled = true
-bind_ip = 0.0.0.0
-master_port = 10888
-cluster_key = Tendy2020"""
-                try:
-                    f = open(file, 'a', encoding='utf-8')
-                    f.write(data)
-                    f.close()
-                except ImportError:
-                    pass
 
         self.cluster_config = GlobalConfig(file)
         self.steam_group_id.setText(self.cluster_config.get("STEAM", "steam_group_id"))

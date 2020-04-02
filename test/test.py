@@ -18,7 +18,7 @@
 from slpp import slpp as lua
 from LuaTableParser import LuaTableReader, LuaTableParser
 
-f = open("quagmire.lua", 'r', encoding='utf-8')
+f = open("forest.lua", 'r', encoding='utf-8')
 data = f.read()
 f.close()
 # data = assert(loadstring(data))()
@@ -37,9 +37,9 @@ p1 = LuaTableParser()
 p1.load(data)
 d = p1.dumpDict()
 print(d)
-p1.loadDict(d)
-la = p1.dump()
-print(la)
+# p1.loadDict(d)
+# la = p1.dump()
+# print(la)
 # p.loadLuaTable('test.lua')
 # data = data.replace("return", "")
 # print(data)
