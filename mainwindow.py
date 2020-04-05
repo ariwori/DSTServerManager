@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import qdarkstyle
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy, QMessageBox
 from PyQt5.QtCore import Qt
 from maintab import MainTab
 from settingswindow import SettingsWidget
 from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR, TEMP_FILE
 from config import GlobalConfig
+import shutil
 
 
 class MainWindow(QMainWindow):
@@ -25,7 +26,7 @@ class MainWindow(QMainWindow):
         self.status.showMessage("我是状态栏，用于显示程序运行信息！")
         # 设置初始化的窗口大小
         self.setMinimumWidth(800)
-        self.resize(1130, 700)
+        self.resize(1100, 700)
         # 最开始窗口要居中显示
         self.center()
         # 设置窗口透明度
@@ -57,6 +58,7 @@ class MainWindow(QMainWindow):
         delete_cluster_btn.setFixedSize(180, 30)
         delete_cluster_btn.setText("删除存档")
         top_button_layout.addWidget(delete_cluster_btn)
+        delete_cluster_btn.clicked.connect(self.deleteCluster)
         # 导出远程存档按钮
         export_remote_cluster_btn = QPushButton(top_left_frame)
         export_remote_cluster_btn.setText("导出远程存档")
@@ -156,6 +158,22 @@ class MainWindow(QMainWindow):
         self.mk_cluster_dir()
         self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
         self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
+        self.cluster_tab.shard_settings_tab.initShardTab()
+
+    def deleteCluster(self):
+        cindex = self.current_cluster_index
+        sdir = os.path.join(CLUSTER_DIR, "Cluster_" + str(cindex))
+        if os.path.exists(sdir):
+            shutil.rmtree(sdir)
+        self.right_layout.setCurrentIndex(0)
+        self.mk_cluster_dir()
+        self.cluster_tab.setCurrentIndex(0)
+        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
+        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
+        self.cluster_tab.shard_settings_tab.initShardTab()
+        QMessageBox.information(self, "删除完毕", "存档槽" + str(cindex) + "已删除并重置！", QMessageBox.Yes)
 
     def mk_cluster_dir(self):
         self.current_cluster_folder = os.path.join(CLUSTER_DIR, "Cluster_" + str(self.current_cluster_index))

@@ -74,7 +74,7 @@ class SettingsWidget(QWidget):
         sc_settings_groupbox.setLayout(sc_settings_groupbox_layout)
 
         server_settings_groupbox = QGroupBox()
-        server_settings_groupbox.setTitle("云主机设置")
+        server_settings_groupbox.setTitle("云主机设置(截图请注意隐藏IP和密码)")
         server_settings_groupbox_layout = QVBoxLayout()
 
         token_layout = QHBoxLayout()
@@ -202,20 +202,23 @@ class SettingsWidget(QWidget):
         row = self.server_table.currentRow()
         if row > -1:
             ip = self.server_table.item(row, 1).text()
-            username = self.server_table.item(row, 2).text()
-            passwd = self.server_table.item(row, 3).text()
-            try:
-                # 创建一个SSH客户端对象
-                ssh = paramiko.SSHClient()
-                # 设置访问策略
-                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                # 与远程主机进行连接
-                ssh.connect(hostname=ip, port=22, username=username, password=passwd)
-                QMessageBox.information(self, "连接正确", "服务器连接测试通过!", QMessageBox.Yes)
-            except Exception as e:
-                QMessageBox.critical(self, "连接错误", str(e), QMessageBox.Yes)
-            finally:
-                ssh.close()
+            if ip == "127.0.0.1":
+                QMessageBox.information(self, "无需测试", "本地服请确保本地已安装服务端且已配好路径！", QMessageBox.Yes)
+            else:
+                username = self.server_table.item(row, 2).text()
+                passwd = self.server_table.item(row, 3).text()
+                try:
+                    # 创建一个SSH客户端对象
+                    ssh = paramiko.SSHClient()
+                    # 设置访问策略
+                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                    # 与远程主机进行连接
+                    ssh.connect(hostname=ip, port=22, username=username, password=passwd)
+                    QMessageBox.information(self, "连接正确", "服务器连接测试通过!", QMessageBox.Yes)
+                except Exception as e:
+                    QMessageBox.critical(self, "连接错误", str(e), QMessageBox.Yes)
+                finally:
+                    ssh.close()
         else:
             QMessageBox.warning(self, "警告", "你没有选中服务器！", QMessageBox.Yes)
 
@@ -251,19 +254,22 @@ class SettingsWidget(QWidget):
             self.local_cluster_path_lineEdit.setText(CLUSTER_DIR)
 
     def get_server_list(self):
-        list = []
+        slist = []
         rowCount = self.server_table.rowCount()
         for row in range(rowCount):
-            list.append([self.server_table.item(row, 0).text(),
-                        self.server_table.item(row, 1).text(),
-                        self.server_table.item(row, 2).text(),
-                        self.server_table.item(row, 3).text(),
-                        self.server_table.item(row, 4).text()])
-        return list
+            slist.append([self.server_table.item(row, 0).text(),
+                         self.server_table.item(row, 1).text(),
+                         self.server_table.item(row, 2).text(),
+                         self.server_table.item(row, 3).text(),
+                         self.server_table.item(row, 4).text()])
+        return slist
 
     def set_server_list(self, serverlist):
         row = self.server_table.rowCount()
+        flag = False
         for list in serverlist:
+            if list[1] == "127.0.0.1":
+                flag = True
             self.server_table.setRowCount(row + 1)
             self.server_table.setItem(row, 0, QTableWidgetItem(list[0]))
             self.server_table.setItem(row, 1, QTableWidgetItem(list[1]))
@@ -276,6 +282,10 @@ class SettingsWidget(QWidget):
             self.server_table.item(row, 3).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.server_table.item(row, 4).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             row += 1
+            if not flag:
+                self.set_server_list([["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
+        if 0 == len(serverlist):
+            self.set_server_list([["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
 
     # 保存设置
     def save_settings_data(self):

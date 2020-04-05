@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLab
 from globalvar import CONFIG_DIR
 import os
 from config import GlobalConfig
+from settingswindow import SettingsWidget
 
 
 class ClusterWidget(QWidget):
@@ -111,9 +112,11 @@ class ClusterWidget(QWidget):
 
         layout11 = QHBoxLayout()
         label10 = QLabel()
-        label10.setText("主世界IP:")
-        self.masterip = QLineEdit()
-        self.masterip.setText("127.0.0.1")
+        label10.setText("主世界服务器:")
+        label10.setFixedWidth(100)
+        self.masterip = QComboBox()
+        self.masterip.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+        self.masterip.setItemDelegate(QStyledItemDelegate())
         layout11.addWidget(label10)
         layout11.addWidget(self.masterip)
 
@@ -147,6 +150,37 @@ class ClusterWidget(QWidget):
         self.set_default_cluster_settings.clicked.connect(self.write_to_default_cluster_data)
         self.save_cluster_setttings.clicked.connect(self.write_curret_cluster_data)
 
+        self.setServerIP(self.masterip, ip="127.0.0.1")
+
+    def setServerIP(self, combox, ip):
+        if ip == "":
+            oldvalue = self.getServerIP()
+        else:
+            oldvalue = ip
+        combox.clear()
+        self.serverlist = SettingsWidget().get_server_list()
+        oldindex = 0
+        index = 0
+        for l in self.serverlist:
+            if l[0] != "":
+                combox.addItem(l[0]+"@"+l[1])
+            else:
+                combox.addItem(l[1])
+            if l[1] == oldvalue:
+                oldindex = index
+            index += 1
+        combox.setCurrentIndex(oldindex)
+
+    def getServerIP(self):
+        iparr = self.masterip.currentText().split('@')
+        if len(iparr) > 1:
+            ip = iparr[1]
+        else:
+            ip = iparr[0]
+        if ip == "":
+            ip = "127.0.0.1"
+        return ip
+
     def read_default_cluster_data(self):
         file = os.path.join(CONFIG_DIR, "cluster.ini")
         self.read_cluster_data(file)
@@ -160,13 +194,13 @@ class ClusterWidget(QWidget):
 
     def write_cluster_data(self, file):
         self.cluster_config.set("STEAM", "steam_group_id", self.steam_group_id.text())
-        self.cluster_config.setboolen("STEAM", "steam_group_only", self.steam_group_only.isChecked())
-        self.cluster_config.setboolen("STEAM", "steam_group_admins", self.steam_group_admin.isChecked())
+        self.cluster_config.setboolean("STEAM", "steam_group_only", self.steam_group_only.isChecked())
+        self.cluster_config.setboolean("STEAM", "steam_group_admins", self.steam_group_admin.isChecked())
 
-        self.cluster_config.setboolen("GAMEPLAY", "pvp", self.pvp.isChecked())
+        self.cluster_config.setboolean("GAMEPLAY", "pvp", self.pvp.isChecked())
         self.cluster_config.set("GAMEPLAY", "game_mode", self.game_mode_value[self.game_mode.currentIndex()])
-        self.cluster_config.setboolen("GAMEPLAY", "pause_when_empty", self.pause_when_empty.isChecked())
-        self.cluster_config.setboolen("GAMEPLAY", "vote_enabled", self.vote.isChecked())
+        self.cluster_config.setboolean("GAMEPLAY", "pause_when_empty", self.pause_when_empty.isChecked())
+        self.cluster_config.setboolean("GAMEPLAY", "vote_enabled", self.vote.isChecked())
         self.cluster_config.set("GAMEPLAY", "max_players", self.max_players.text())
 
         self.cluster_config.set("NETWORK", "cluster_name", self.cluster_name.text())
@@ -180,7 +214,7 @@ class ClusterWidget(QWidget):
         self.cluster_config.set("NETWORK", "whitelist_slots", self.white_players.text())
         self.cluster_config.set("NETWORK", "cluster_password", self.password.text())
 
-        self.cluster_config.set("SHARD", "master_ip", self.masterip.text())
+        self.cluster_config.set("SHARD", "master_ip", self.getServerIP())
 
         self.cluster_config.save(file)
 
@@ -212,4 +246,4 @@ class ClusterWidget(QWidget):
         self.white_players.setText(self.cluster_config.get("NETWORK", "whitelist_slots"))
         self.password.setText(self.cluster_config.get("NETWORK", "cluster_password"))
 
-        self.masterip.setText(self.cluster_config.get("SHARD", "master_ip"))
+        self.setServerIP(self.masterip, self.cluster_config.get("SHARD", "master_ip"))

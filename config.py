@@ -11,6 +11,12 @@ class GlobalConfig(object):
         if os.path.exists(config_file):
             self._config.read(self._config_file, encoding='utf-8')
 
+    def has_section(self, section):
+        return self._config.has_section(section)
+
+    def add_section(self, section):
+        self._config.add_section(section)
+
     def get(self, section, name, strip_blank=True, strip_quote=True):
         s = self._config.get(section, name)
         if strip_blank:
@@ -26,7 +32,7 @@ class GlobalConfig(object):
             value = value.strip('"').strip("'")
         self._config.set(section, key, value)
 
-    def setboolen(self, section, key, value):
+    def setboolean(self, section, key, value):
         if value:
             value = "true"
         else:
