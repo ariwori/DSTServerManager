@@ -204,7 +204,6 @@ class LuaStrParser:
 
     def __readStatement(self, lua_str, loc):
         loc = self.__jumpSpace(lua_str, loc)
-
         if lua_str[loc] == '{':
             end = self.__getRightBrace(lua_str, loc)
             stat = self.__parserLuaStr(lua_str[loc: end + 1])
@@ -224,6 +223,8 @@ class LuaStrParser:
             end = loc
             while end < len(lua_str) and lua_str[end] not in self.__stopChars:
                 end += 1
+            if lua_str[loc-1] not in self.__stopChars and lua_str[loc-1] != "{":
+                loc -= 1
             stat, stat_type = self.__readValue(lua_str[loc: end])
             loc = end
         return stat, stat_type, loc
@@ -252,7 +253,8 @@ class LuaStrParser:
                     keys.append((key, key_type))
                     values.append((value, value_type))
                 else:
-                    raise Exception("the key is nil")
+                    # raise Exception("the key is nil")
+                    print("the key is nil")
             else:
                 keys.append((key, key_type))
                 values.append((None, None))
@@ -429,7 +431,7 @@ if __name__ == '__main__':
     f = open("modinfo.lua", "r", encoding="utf-8")
     data = f.read()
     f.close()
-    pyluatblparser.load(data)
+    pyluatblparser.load("{"+data+"}")
     a = pyluatblparser.dumpDict()
     with open("aa.json", 'w', encoding="utf-8") as f:
         json.dump(a, f)

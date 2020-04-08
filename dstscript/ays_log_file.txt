@@ -1,8 +1,0 @@
-Forest1：加载游戏文件完成。。。
-Forest1：加载房间配置完成。。。
-Forest1：开始运行服务端程序。。。
-Forest1：开始下载或更新MOD并加载MOD配置，MOD多/大这里会卡久，请耐心等。。。
-Forest1：开始收集服务器配置。。。
-Forest1：正在连接世界。。。
-Forest1：世界运行暂停。。。服务器开启成功！
-Forest1：ANALYSISLOGDONE

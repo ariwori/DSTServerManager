@@ -2,7 +2,7 @@
 from luaparser import astnodes
 
 f = open("modinfo.lua", "r", encoding="utf-8")
-data = f.read()
+data = f.readline
 f.close()
 
 a = astnodes.

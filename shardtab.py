@@ -177,7 +177,7 @@ class ShardWidget(QWidget):
         cindex = 0
         for file in exist_shards:
             arr = file.split("_")
-            if len(arr) > 1 and arr[0] in shard_type:
+            if len(arr) > 1 and arr[0] in shard_type and file != "cluster_token.txt":
                 self.addShardTab(arr[0], int(arr[1]), shard=[])
                 cindex += 1
 

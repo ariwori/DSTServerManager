@@ -299,6 +299,9 @@ class SettingsWidget(QWidget):
         settings['servers'] = self.get_server_list()
         self.write_json_data('settings.json', settings)
 
+    def getClientPath(self):
+        return self.local_client_path_lineEdit.text()
+
     def select_client_dir(self):
         client_dir = ""
         if sys.platform == "darwin":

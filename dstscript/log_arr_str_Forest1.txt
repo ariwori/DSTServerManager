@@ -1,7 +1,0 @@
-0@.*Generating SURVIVAL Mode Level.*@正在创建世界。。。
-1@.*World .* is now connected.*@世界连接成功。。。服务器开启成功！
-1@.*Your Server Will Not Start.*@令牌缺失。。。服务器开启失败！
-1@.*SOCKET_PORT_ALREADY_IN_USE.*@端口冲突。。。服务器开启失败！
-1@.*LUA is now ready!.*@服务器开启成功！
-1@.*Sim paused.*@世界运行暂停。。。服务器开启成功！
-1@.*Registering master server.*@服务器开启成功！

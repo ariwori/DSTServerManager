@@ -1,299 +1,152 @@
---The name of the mod displayed in the 'mods' screen.
-name = "Status Announcements"
-
---A description of the mod.
-description =
-    'Alt-click parts of the HUD to announce their status ("I\'m wounded!", "I have 2 twigs.", "We need more drying racks."). ALT+SHIFT click to announce items.'
-
---Who wrote this awesome mod?
+name = "Rezecib's Rebalance"
+description = "Makes many modifications to the game in an attempt to rebalance weak or annoying mechanics, and tone down some of the overpowered ones."
 author = "rezecib"
+version = "1.4.2"
 
---A version number so you can ask people if they are running an old version of your mod.
-version = "2.6.7"
+--[[
+Major miscellaneous changes:
+	WX-78's overcharge now stacks with diminishing returns (1 strike is about the same, but 10 strikes only gives about 3 days)
+	WX-78 now drops all gears except one on death, instead of way fewer
+	Players can no longer attack each other's minions/followers unless PvP is on (Maxwell's shadows, Abigail, etc)
+	Attack-command now works properly; followers will get the same target at you as soon as you target, instead of at the start of your attack animation
+	Saplings are protected from disease by deciduous turf
+	Fixed beardlings/beardlords to show up at 40% sanity instead of 15%
+	Thermal Measurer now gives the exact temperature and a description when examined
+	Shadow creatures cannot despawn within 15s of being attacked
+	Cave ferns respawn like flowers
+	Fireflies respawn like carrots (but not if you place them down again)
+	Abigail can be disengaged/engaged (making her passive)
+	Extra-Adorable Lavae have health regen, do not die from starvation, do not light things on fire, and do not die when frozen
 
---This lets other players know if your mod is out of date. This typically needs to be updated every time there's a new game update.
+Maxwell:
+	Can now change his minion types by giving them items, or make them stop working, but starts with 5 fuel instead of 6
+	Minions now all have 75 health, and non-duelists have 1/5 of the duelist regen, but cost 5 fuel
+	Minions match Maxwell's speed
+	Chopper minions no longer run away from poison birchnuts (they will run away from the birchnutters, though)
+	Duelist minions have improved kiting (will still have trouble with groups of enemies)
+	Has two new minion types: torchbearer, porter
+	Minions can now be armored by football helmets or battle helms, for 25% armor and taking a maximum of 45 damage per hit
+
+Willow:
+	Can craft a Shadow Lighter with the Shadow Manipulator, a Lighter, and 2 Nightmare Fuel
+	The Shadow Lighter can only be used by Willow, lasts longer, and can be refueled with Nightmare Fuel (30%)
+	Can light shadowfires with the shadow lighter for 2.5% durability and 15 sanity
+	Shadowfires work like houndfire but do not propagate, and burn longer (extinguish after dealing 200 damage)
+	Shadowfires have some special interactions with flingomatics :)
+	Willow is 100% immune to shadowfire damage (in PvE, all players are immune)
+	If she has gone 2 days without lighting a (shadow)fire, gradually loses more sanity over time
+
+Woodie:
+	No sanity loss as werebeaver, but transform back with low stats (like single-player)
+	Damage taken as the werebeaver is removed from the log meter before health, with 60% reduction
+	Werebeaver insulation doubled and water resistance increased to 90%
+	Werebeaver deals 51 base damage again (still has bonus wood damage)
+	Werebeaver deals axe damage in PvP
+	Removed pinecone sanity gain
+
+Wolfgang:
+	Wimpy/mighty states have set stats (no scaling), with 2x hunger drain in all states
+	His sanity drain multiplier is increased from 1.1x to 1.5x
+	Wimpy: 0.9 scale, 0.75x damage, 150 health
+	Mighty: 1.25 scale, 2x damage, 300 health
+	His powerup/powerdown animations can now be canceled
+
+Beefalo domestication:
+	While riding beefalo, a little widget on the HUD pops up to show beefalo stats
+	A beefalo's domestication is stored separately for each player
+	Domestication loss over time is reduced (full loss in 20 days rather than 9 days)
+	Being attacked by a player only deducts domestication for that player
+	Gain domestication while sleeping next to a player
+	Beefalo can no longer be brushed until they are ready to be brushed
+	Saddles can be repaired with a sewing kit, but also lose durability while riding TODO TODO
+	Partially or fully domesticated beefalo near a player save and load with the player
+	Beefalo are faster on roads (even while not being ridden... watch out!)
+	Beefalo now show their favorite player and tendency (when domesticated)
+	Beefalo collar can be crafted. When given to a fully domesticated beefalo, let you name it.
+	Collared beefalo, instead of dying, lie on the ground in a near-death state for a day
+	You can revive a near-death beefalo by giving it a booster shot (comes back with 25% health)
+	In PvP only, collared beefalo can only be ridden by the player who collared them
+	Domesticated beefalo no longer share aggro like other beefalo
+
+Magic Items:
+	The Night Light costs 2 more red gems and 4 more nightmare fuel,
+		but now functions like a Nightmare Fissure while lit, spawning nightmares that attack sane players
+	The Bat Bat can be repaired with Batilisk Wings, and has a little bit more durability
+	The One Man Band no longer grabs pig or bunnyman followers, but instead speeds all followers by 1.25x to 3x,
+		lasts for 5 days, and can be refueled with nightmare fuel for 1 day of use,
+		and the recipe is now 4 gold, 6 nightmare fuel, 4 pig skin;
+		Webber can befriend pigs/bunnymen while wearing it
+	Sleepytime Stories has 15 (half) range against players
+	Rabbit Earmuffs now give substantial resistance to Sleepytime Stories and Pan Flutes
+	The Weather Pain now 1-shots rocks and trees, but does less to structures
+
+Ancient Items:
+	Lazy Explorer can now be refueled by orange gems (1 for a full refuel)
+	The Pick/Axe gains back 80% of the durability it would've used to kill an enemy if one dies near it
+	The Lazy Forager can be refueled by nightmare fuel (1 fuel per 25 item pickups)
+	The Lazy Forager's range is doubled (from 4 to 8, or 1 tile to 2 tiles)
+	The Lazy Forager, Lazy Explorer, and Magiluminescence don't break when they run out
+
+Minor miscellaneous changes:
+	Insulated Pack is no longer flammable, and has the same number of slots as a normal backpack, and costs 1 gear instead of 3
+	Deciduous turf now spawns the same birds as forest turf
+	Beefalo no longer eat off of turf that has no grass (bad beefalo... dirt is for moleworms)
+	Disease now kills things in 2-3 days rather than 30s to 1 day
+	Lanterns can now be turned off and on by haunting (50% chance)
+
+==> TODO:
+
+==> Thinking about, but not sure:
+
+Bernie takes no damage from shadows, but can only pull one at a time
+Twiggy trees can only have one twig on the ground, drop it randomly when at full size, and don't check the area
+Smallbirds
+More insulated pack buffs?
+
+]]
+
+icon_atlas = "RezecibsRebalance.xml"
+icon = "RezecibsRebalance.tex"
+
+forumthread = ""
+
 api_version = 10
+
+priority = -9000 --needs to load after character mods
+
+server_filter_tags = {"rezecib's rebalance"}
 
 dst_compatible = true
 
---This lets clients know if they need to get the mod from the Steam Workshop to join the game
-all_clients_require_mod = false
+client_only_mod = false
+all_clients_require_mod = true
 
---This determines whether it causes a server to be marked as modded (and shows in the mod list)
-client_only_mod = true
-
---This lets people search for servers with this mod by these tags
-server_filter_tags = {}
-
-icon_atlas = "statusannouncements.xml"
-icon = "statusannouncements.tex"
-
-forumthread = "/files/file/923-dst-status-announcements"
-
---[[
-Credits:
-    Silentdarkness1 for coming up with most of the character-specific quotes
-	Acemurdock and OSMRhodey for helping out with the Woodie quotes
-	SuperPsiPower (and friends) for helping out with the Webber quotes
-	Vinicius Araújo for translating the quotes to Brazilian Portuguese
-	GoforDream and Shang for translating to Chinese
-	Gum for translating to Spanish
-	deshkas and Shire for a partial Russian translation
-	Redhead for translating to German
-]]
-configuration_options = {
-    {
-        name = "LANGUAGE",
-        label = "Which language to use",
-        options = {
-            {description = "Detect", data = "detect", hover = "Detect the language based on language mods installed."},
-            {description = "English", data = "english"},
-            {description = "Deutsch", data = "german"},
-            {description = "Português (BR)", data = "brazil"},
-            {description = "Chinese", data = "chinese"},
-            {description = "русский", data = "russian"},
-            {description = "Español", data = "spanish"},
-        },
-        default = "detect"
-    },
-    {
-        name = "WHISPER",
-        label = "Whisper by default",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = false
-    },
-    {
-        name = "EXPLICIT",
-        label = "Show current/max",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = "When announcing stats, show the numbers for your current and max stat."
-    },
-    {
-        name = "SHOWPROTOTYPER",
-        label = "Announce Prototyper",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = "When announcing a crafting recipe, whether to announce that you need a science machine or another prototyper."
-    },
-    {
-        name = "SHOWEMOJI",
-        label = "Announce Emoji",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = 'When announcing stats, show an emoji for the stat (if using "Show current/max").'
-    },
-    {
-        name = "SHOWDURABILITY",
-        label = "Announce Durability",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = "Whether to announce the durability/freshness of an item when announcing that you have it."
-    },
-    {
-        name = "OVERRIDEB",
-        label = "Controller Cancel",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = "When controller inventory is open, allow the B/cancel button\nto be used to announce temperature\n(if you are using Combined Status)."
-    },
-    {
-        name = "OVERRIDESELECT",
-        label = "Controller Map",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true,
-        hover = "When controller inventory is open, allow the SELECT/map button\nto be used to announce the season\n(if you are using Combined Status)."
-    },
-    {
-        name = "WILSON",
-        label = "Custom Wilson Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WILLOW",
-        label = "Custom Willow Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WX78",
-        label = "Custom WX-78 Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WICKERBOTTOM",
-        label = "Custom Wickerbottom Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WOLFGANG",
-        label = "Custom Wolfgang Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WENDY",
-        label = "Custom Wendy Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WOODIE",
-        label = "Custom Woodie Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WES",
-        label = "Custom Wes Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WAXWELL",
-        label = "Custom Maxwell Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WEBBER",
-        label = "Custom Webber Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WATHGRITHR",
-        label = "Custom Wigfrid Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WINONA",
-        label = "Custom Winona Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WORMWOOD",
-        label = "Custom Wormwood Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WURT",
-        label = "Custom Wurt Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WORTOX",
-        label = "Custom Wortox Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WARLY",
-        label = "Custom Warly Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WALANI",
-        label = "Custom Walani Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WOODLEGS",
-        label = "Custom Woodlegs Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    },
-    {
-        name = "WILBUR",
-        label = "Custom Wilbur Quotes",
-        options = {
-            {description = "Yes", data = true},
-            {description = "No", data = false}
-        },
-        default = true
-    }
+configuration_options = {}
+local on_off_options = {
+	{description = "On", data = true},
+	{description = "Off", data = false},
 }
+local function AddPatch(name, label)
+	configuration_options[#configuration_options + 1] = {
+		name = name,
+		label = label,
+		options = on_off_options,
+		default = true,
+		hover = "Note: config options are ignored for public servers.",
+	}
+end
+
+AddPatch("beefalodomestication", "Beefalo Changes")
+AddPatch("maxwellminions",       "Maxwell Rework")
+AddPatch("willowrework",         "Willow Rework")
+AddPatch("wolfgangrework",       "Wolfgang Rework")
+AddPatch("woodierework",         "Woodie Rework")
+AddPatch("wx78rework",           "WX-78 Changes")
+AddPatch("ancientmagic",         "Magic Item Changes")
+AddPatch("giantitems",           "Giant Item Changes")
+AddPatch("lavaebuff",            "Lavae Buff")
+AddPatch("diseaseregrowth",      "Disease/Regrowth Changes")
+AddPatch("thermalmeasurer",      "Thermal Measurer Buff")
+AddPatch("shadowcreatures",      "Shadow Creature Fixes")
+AddPatch("lanternhaunt",         "Lantern Haunt Fix")
+AddPatch("attackfixes",          "Attack Fixes")

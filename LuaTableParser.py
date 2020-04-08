@@ -612,7 +612,7 @@ class LuaTableParser:
     def __dump_aux(self, d, indent_factor, indent):
         commanate = False
         length = len(d)
-        keys = d.keys()
+        keys = list(d.keys())
         ret = '{'
         if length == 1:
             key = keys[0]

@@ -163,17 +163,19 @@ class MainWindow(QMainWindow):
 
     def deleteCluster(self):
         cindex = self.current_cluster_index
-        sdir = os.path.join(CLUSTER_DIR, "Cluster_" + str(cindex))
-        if os.path.exists(sdir):
-            shutil.rmtree(sdir)
-        self.right_layout.setCurrentIndex(0)
-        self.mk_cluster_dir()
-        self.cluster_tab.setCurrentIndex(0)
-        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
-        self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
-        self.cluster_tab.shard_settings_tab.initShardTab()
-        QMessageBox.information(self, "删除完毕", "存档槽" + str(cindex) + "已删除并重置！", QMessageBox.Yes)
+        delm = QMessageBox.warning(self, "删除警告", "你确定要删除存档槽" + str(cindex) + "?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if delm == QMessageBox.Yes:
+            sdir = os.path.join(CLUSTER_DIR, "Cluster_" + str(cindex))
+            if os.path.exists(sdir):
+                shutil.rmtree(sdir)
+            self.right_layout.setCurrentIndex(0)
+            self.mk_cluster_dir()
+            self.cluster_tab.setCurrentIndex(0)
+            self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
+            self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
+            self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
+            self.cluster_tab.shard_settings_tab.initShardTab()
+            QMessageBox.information(self, "删除完毕", "存档槽" + str(cindex) + "已删除并重置！", QMessageBox.Yes)
 
     def mk_cluster_dir(self):
         self.current_cluster_folder = os.path.join(CLUSTER_DIR, "Cluster_" + str(self.current_cluster_index))
