@@ -11,7 +11,7 @@ class NewShardDialog(QDialog):
 
     def __init__(self, parent=None):
         super(NewShardDialog, self).__init__(parent)
-        self.setFixedSize(320, 200)
+        self.setFixedSize(300, 200)
 
         frame = QFrame(self)
         frame_layout = QVBoxLayout()

@@ -46,8 +46,8 @@ class ModConfigDialog(QDialog):
     def initData(self, cdict):
         self.options = cdict
         num = len(cdict)
-        self.topFiller.setMinimumSize(400, 30 * num + 30)
-        maxh = 30 * num + 100 > 500 and 500 or 30 * num + 100
+        self.topFiller.setMinimumSize(400, 40 * num + 50)
+        maxh = 40 * num + 50 > 500 and 500 or 40 * num + 50
         self.setFixedHeight(maxh)
         oWidget = QWidget(self.topFiller)
         mm = QVBoxLayout()
@@ -74,7 +74,7 @@ class ModConfigDialog(QDialog):
                     b.currentIndexChanged.connect(self.selectChange)
                     bd = []
                     for o in op['options']:
-                        b.addItem(o['description'])
+                        b.addItem(str(o['description']))
                         bd.append(o['data'])
                     b.data = bd
                     if self.getDictValue(op['options'][b.currentIndex()], 'hover'):
