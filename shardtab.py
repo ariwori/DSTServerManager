@@ -272,7 +272,7 @@ class ShardWidget(QWidget):
     def readShardOptions(self, filename):
         file = os.path.join(CONFIG_DIR, filename + ".json")
         if os.path.exists(file):
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding="utf8") as f:
                 data = json.load(f)
         else:
             data = {}
