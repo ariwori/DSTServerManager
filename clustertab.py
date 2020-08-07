@@ -161,12 +161,12 @@ class ClusterWidget(QWidget):
         self.serverlist = SettingsWidget().get_server_list()
         oldindex = 0
         index = 0
-        for l in self.serverlist:
-            if l[0] != "":
-                combox.addItem(l[0]+"@"+l[1])
+        for slist in self.serverlist:
+            if slist[0] != "":
+                combox.addItem(slist[0]+"@"+slist[1])
             else:
-                combox.addItem(l[1])
-            if l[1] == oldvalue:
+                combox.addItem(slist[1])
+            if slist[1] == oldvalue:
                 oldindex = index
             index += 1
         combox.setCurrentIndex(oldindex)
