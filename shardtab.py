@@ -136,8 +136,11 @@ class ShardWidget(QWidget):
         self.addShardTab(shard[3], 0, shard)
 
     def getCurrentCluster(self):
-        tc = GlobalConfig(TEMP_FILE)
-        return tc.get("TEMP", "cluster_index")
+        if os.path.exists(TEMP_FILE):
+            tc = GlobalConfig(TEMP_FILE)
+            return tc.get("TEMP", "cluster_index")
+        else:
+            return "1"
 
     def loadShardValue(self, w, combos):
         levelfname = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), w.type + "_" + str(w.id), "leveldataoverride.lua")
@@ -172,14 +175,15 @@ class ShardWidget(QWidget):
         self.serverconfig = {}
         self.shardtab.clear()
         cdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
-        shard_type = ["forest", "caves", "aog", "lavaarena", "quagmire"]
-        exist_shards = os.listdir(cdir)
-        cindex = 0
-        for file in exist_shards:
-            arr = file.split("_")
-            if len(arr) > 1 and arr[0] in shard_type and file != "cluster_token.txt":
-                self.addShardTab(arr[0], int(arr[1]), shard=[])
-                cindex += 1
+        if os.path.exists(cdir):
+            shard_type = ["forest", "caves", "aog", "lavaarena", "quagmire"]
+            exist_shards = os.listdir(cdir)
+            cindex = 0
+            for file in exist_shards:
+                arr = file.split("_")
+                if len(arr) > 1 and arr[0] in shard_type and file != "cluster_token.txt":
+                    self.addShardTab(arr[0], int(arr[1]), shard=[])
+                    cindex += 1
 
     def addShardTab(self, world, wid, shard):
         sindex = len(self.shardtabs)
@@ -272,7 +276,7 @@ class ShardWidget(QWidget):
     def readShardOptions(self, filename):
         file = os.path.join(CONFIG_DIR, filename + ".json")
         if os.path.exists(file):
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding="utf-8") as f:
                 data = json.load(f)
         else:
             data = {}

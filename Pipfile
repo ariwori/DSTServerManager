@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://mirrors.aliyun.com/pypi/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+
+[packages]
+configparser = "*"
+paramiko = "*"
+qdarkstyle = "*"
+PyQt5 = "*"
+pyinstaller = "*"
+lupa = "*"
+
+[requires]
+python_version = "3.7"

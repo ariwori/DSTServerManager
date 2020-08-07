@@ -326,10 +326,14 @@ class SettingsWidget(QWidget):
 
     def open_cluster(self):
         cluster_path = self.local_cluster_path_lineEdit.text()
+        if cluster_path == "":
+            cluster_path = CLUSTER_DIR
+            self.local_cluster_path_lineEdit.setText(CLUSTER_DIR)
+            self.save_settings_data()
         if os.path.exists(cluster_path):
             if sys.platform == "darwin":
                 os.system("open %s" % cluster_path)
-            elif sys.platform == "":
+            elif sys.platform == "win32":
                 os.system("start explorer %s" % cluster_path)
             else:
                 QMessageBox.warning(self, "警告", "当前系统不支持该操作", QMessageBox.Yes)

@@ -86,8 +86,11 @@ class ModWidget(QWidget):
         self.loadSaveMod()
 
     def getCurrentCluster(self):
-        tc = GlobalConfig(TEMP_FILE)
-        return tc.get("TEMP", "cluster_index")
+        if os.path.exists(TEMP_FILE):
+            tc = GlobalConfig(TEMP_FILE)
+            return tc.get("TEMP", "cluster_index")
+        else:
+            return "1"
 
     def getModDir(self):
         dirstr = SettingsWidget().getClientPath()
@@ -194,7 +197,7 @@ class ModWidget(QWidget):
 
     def openModDir(self):
         if self.currentSelectMod == "":
-            path = self.modrootdir
+            path = ""
         else:
             path = os.path.join(self.modrootdir, self.currentSelectMod)
         if os.path.exists(path):

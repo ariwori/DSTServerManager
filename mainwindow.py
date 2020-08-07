@@ -8,6 +8,8 @@ from settingswindow import SettingsWidget
 from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR, TEMP_FILE
 from config import GlobalConfig
 import shutil
+import sys
+import distutils
 
 
 class MainWindow(QMainWindow):
@@ -189,18 +191,29 @@ class MainWindow(QMainWindow):
         self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
         self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
 
+    def resource_path(self, relative_path):
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
+
     def initDir(self):
         if not os.path.exists(ROOT_DIR):
             os.mkdir(ROOT_DIR)
         if not os.path.exists(CLUSTER_DIR):
             os.mkdir(CLUSTER_DIR)
         if not os.path.exists(CONFIG_DIR):
-            os.mkdir(CONFIG_DIR)
+            print(self.resource_path("Configs"))
+            distutils.dir_util.copy_tree(self.resource_path("Configs"), CONFIG_DIR)
 
     def initData(self):
         self.initDir()
         self.tempconfig = GlobalConfig(TEMP_FILE)
-        self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
+        if os.path.exists(TEMP_FILE):
+            self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
+        else:
+            self.current_cluster_index = 1
         self.init_cluster_data(self.current_cluster_index)
 
     # 设置窗口居中
