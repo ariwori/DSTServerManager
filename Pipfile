@@ -1,12 +1,29 @@
 [[source]]
 name = "pypi"
+<<<<<<< HEAD
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+=======
+url = "https://mirrors.aliyun.com/pypi/simple"
+>>>>>>> 12d11c3393c7c623a6a304eb90a02387831ed6bb
 verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
 
 [packages]
+<<<<<<< HEAD
 
 [requires]
 python_version = "3.8"
+=======
+configparser = "*"
+paramiko = "*"
+qdarkstyle = "*"
+PyQt5 = "*"
+pyinstaller = "*"
+lupa = "*"
+yapf = "*"
+
+[requires]
+python_version = "3.7"
+>>>>>>> 12d11c3393c7c623a6a304eb90a02387831ed6bb

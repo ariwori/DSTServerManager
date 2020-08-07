@@ -194,13 +194,17 @@ class MainWindow(QMainWindow):
             os.mkdir(ROOT_DIR)
         if not os.path.exists(CLUSTER_DIR):
             os.mkdir(CLUSTER_DIR)
-        if not os.path.exists(CONFIG_DIR):
-            os.mkdir(CONFIG_DIR)
+        if not os.path.exists(TEMP_FILE):
+            self.tempconfig = GlobalConfig(os.path.join(CONFIG_DIR, "temp.ini"))
+            self.tempconfig.save(TEMP_FILE)
 
     def initData(self):
         self.initDir()
         self.tempconfig = GlobalConfig(TEMP_FILE)
-        self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
+        if os.path.exists(TEMP_FILE):
+            self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
+        else:
+            self.current_cluster_index = 1
         self.init_cluster_data(self.current_cluster_index)
 
     # 设置窗口居中
