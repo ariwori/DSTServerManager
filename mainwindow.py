@@ -8,8 +8,6 @@ from settingswindow import SettingsWidget
 from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR, TEMP_FILE
 from config import GlobalConfig
 import shutil
-import sys
-import distutils
 
 
 class MainWindow(QMainWindow):
@@ -196,6 +194,9 @@ class MainWindow(QMainWindow):
             os.mkdir(ROOT_DIR)
         if not os.path.exists(CLUSTER_DIR):
             os.mkdir(CLUSTER_DIR)
+        if not os.path.exists(TEMP_FILE):
+            self.tempconfig = GlobalConfig(os.path.join(CONFIG_DIR, "temp.ini"))
+            self.tempconfig.save(TEMP_FILE)
 
     def initData(self):
         self.initDir()

@@ -12,7 +12,7 @@ def resource_path(relative_path):
 
 
 USER_HOME = os.path.expanduser('~')
-ROOT_DIR = os.path.join(USER_HOME, "DSTServerManager")
+ROOT_DIR = os.path.join(USER_HOME, "Documents", "DSTServerManager")
 CONFIG_DIR = resource_path("Configs")
 CLUSTER_DIR = os.path.join(ROOT_DIR, "Clusters")
-TEMP_FILE = os.path.join(CONFIG_DIR, "temp.ini")
+TEMP_FILE = os.path.join(ROOT_DIR, "temp.ini")
