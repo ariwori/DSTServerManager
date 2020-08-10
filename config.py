@@ -8,8 +8,10 @@ class GlobalConfig(object):
     def __init__(self, config_file):
         self._config_file = config_file
         self._config = configparser.ConfigParser()
-        if os.path.exists(config_file):
-            self._config.read(self._config_file, encoding='utf-8')
+        if not os.path.exists(config_file):
+            file = open(config_file, 'w', encoding="utf-8")
+            file.close()
+        self._config.read(self._config_file, encoding='utf-8')
 
     def has_section(self, section):
         return self._config.has_section(section)

@@ -225,7 +225,7 @@ class SettingsWidget(QWidget):
     def read_json_data(self, filename):
         jsonfile = os.path.join(ROOT_DIR, "settings.json")
         if os.path.exists(jsonfile):
-            with open(jsonfile, 'r') as f:
+            with open(jsonfile, 'r', encoding="utf-8") as f:
                 data = json.load(f)
         else:
             data = {}
@@ -233,7 +233,7 @@ class SettingsWidget(QWidget):
 
     def write_json_data(self, data):
         jsonfile = os.path.join(ROOT_DIR, 'settings.json')
-        with open(jsonfile, 'w') as f:
+        with open(jsonfile, 'w', encoding="utf-8") as f:
             json.dump(data, f)
 
     # 初始化设置

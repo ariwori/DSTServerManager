@@ -195,7 +195,9 @@ class MainWindow(QMainWindow):
         if not os.path.exists(CLUSTER_DIR):
             os.mkdir(CLUSTER_DIR)
         if not os.path.exists(TEMP_FILE):
-            self.tempconfig = GlobalConfig(os.path.join(CONFIG_DIR, "temp.ini"))
+            self.tempconfig = GlobalConfig(TEMP_FILE)
+            self.tempconfig.add_section("TEMP")
+            self.tempconfig.set("TEMP", "cluster_index", "1")
             self.tempconfig.save(TEMP_FILE)
 
     def initData(self):

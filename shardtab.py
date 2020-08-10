@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup, QTabWidget, QScrollArea
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QRadioButton, QComboBox, QStyledItemDelegate, QButtonGroup, QTabWidget, QScrollArea
 from PyQt5.QtCore import Qt
 from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE
 import os
