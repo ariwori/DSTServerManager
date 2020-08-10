@@ -99,7 +99,7 @@ class ModConfigDialog(QDialog):
                 if os.path.exists(os.path.join(rootdir, sdir, "modoverrides.lua")):
                     file = os.path.join(rootdir, sdir, "modoverrides.lua")
                     break
-        if file != "":
+        if os.path.exists(file):
             f = open(file, 'r', encoding='utf-8')
             data = f.read()
             f.close()
