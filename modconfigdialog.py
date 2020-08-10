@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QDialog, QFrame, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QComboBox, QStyledItemDelegate, QButtonGroup, QRadioButton, QScrollArea, QWidget, QTabWidget
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QComboBox, QStyledItemDelegate, QScrollArea, QWidget
+from PyQt5.QtCore import Qt
 import os
 from globalvar import CLUSTER_DIR, TEMP_FILE
 from config import GlobalConfig
