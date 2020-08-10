@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup, QTabWidget, QScrollArea, QTableWidget, QAbstractItemView, QHeaderView, QFrame, QGroupBox, QMessageBox,  QTableWidgetItem, QTextBrowser
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QTableWidget, QVBoxLayout, QLabel, QCheckBox, QAbstractItemView, QHeaderView, QMessageBox,  QTableWidgetItem, QTextBrowser
 from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE
 import os
 import sys
 import json
-import random
 import shutil
 from LuaTableParser import LuaTableParser
 from config import GlobalConfig
-from newsharddialog import NewShardDialog
 from settingswindow import SettingsWidget
-from clustertab import ClusterWidget
 from lupa import LuaRuntime
 from modconfigdialog import ModConfigDialog
 
@@ -65,6 +61,7 @@ class ModWidget(QWidget):
         btnl = QHBoxLayout()
         self.btn1 = QPushButton()
         self.btn1.setText("更改MOD配置")
+        self.btn1.setDisabled(True)
         btn2 = QPushButton()
         btn2.setText("打开MOD文件夹")
         btn2.clicked.connect(self.openModDir)
@@ -138,8 +135,8 @@ class ModWidget(QWidget):
     def modConfig(self):
         if self.currentSelectMod == "":
             QMessageBox.warning(self, "警告", "未选择MOD！", QMessageBox.Yes)
-        elif not self.currentSelectModChecked:
-            QMessageBox.warning(self, "警告", "选中MOD未启用！", QMessageBox.Yes)
+        # elif not self.currentSelectModChecked:
+        #     QMessageBox.warning(self, "警告", "选中MOD未启用！", QMessageBox.Yes)
         else:
             self.modConfigDialog = ModConfigDialog(self)
             self.modConfigDialog.setWindowTitle("修改MOD "+self.modname.text()+" 配置")
@@ -203,8 +200,8 @@ class ModWidget(QWidget):
         if os.path.exists(path):
             if sys.platform == "darwin":
                 os.system("open \"%s\"" % path)
-            elif sys.platform == "":
-                os.system("start explorer %s" % path)
+            elif sys.platform == "win32":
+                os.system("start explorer \"%s\"" % path)
             else:
                 QMessageBox.warning(self, "警告", "当前系统不支持该操作", QMessageBox.Yes)
         else:

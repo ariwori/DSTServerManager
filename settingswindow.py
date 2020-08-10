@@ -6,7 +6,7 @@ import paramiko
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QWidget, QGroupBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox, QTableWidget, QAbstractItemView, QTableWidgetItem, QMessageBox, QHeaderView, QFileDialog
 from PyQt5.QtCore import Qt
 from serverdialog import ServerDialog
-from globalvar import USER_HOME, CLUSTER_DIR, CONFIG_DIR
+from globalvar import USER_HOME, CLUSTER_DIR, ROOT_DIR
 
 
 class SettingsWidget(QWidget):
@@ -223,7 +223,7 @@ class SettingsWidget(QWidget):
             QMessageBox.warning(self, "警告", "你没有选中服务器！", QMessageBox.Yes)
 
     def read_json_data(self, filename):
-        jsonfile = os.path.join(CONFIG_DIR, "settings.json")
+        jsonfile = os.path.join(ROOT_DIR, "settings.json")
         if os.path.exists(jsonfile):
             with open(jsonfile, 'r') as f:
                 data = json.load(f)
@@ -231,11 +231,8 @@ class SettingsWidget(QWidget):
             data = {}
         return data
 
-    def write_json_data(self, filename, data):
-        config_dir = os.path.join(CONFIG_DIR)
-        if not os.path.exists(config_dir):
-            os.mkdir(config_dir)
-        jsonfile = os.path.join(config_dir, filename)
+    def write_json_data(self, data):
+        jsonfile = os.path.join(ROOT_DIR, 'settings.json')
         with open(jsonfile, 'w') as f:
             json.dump(data, f)
 
@@ -297,7 +294,7 @@ class SettingsWidget(QWidget):
         settings['scenable'] = self.sc_enable_checkBox.isChecked()
         settings['servertoken'] = self.server_token_lineEdit.text()
         settings['servers'] = self.get_server_list()
-        self.write_json_data('settings.json', settings)
+        self.write_json_data(settings)
 
     def getClientPath(self):
         return self.local_client_path_lineEdit.text()
@@ -310,6 +307,8 @@ class SettingsWidget(QWidget):
                 client_dir = fileName
         else:
             client_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            if sys.platform == "win32":
+                client_dir = client_dir.replace('/', '\\')
         # self.local_server_path_lineEdit.setText(str(server_dir))
 
         # client_dir = QFileDialog.getExistingDirectory(self, "选择本地客户端路径", USER_HOME)
@@ -348,4 +347,6 @@ class SettingsWidget(QWidget):
                 server_dir = fileName
         else:
             server_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            if sys.platform == "win32":
+                server_dir = server_dir.replace('/', '\\')
         self.local_server_path_lineEdit.setText(str(server_dir))
