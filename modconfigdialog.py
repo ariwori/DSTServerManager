@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QComboBox, QStyledItemDelegate, QScrollArea, QWidget
 from PyQt5.QtCore import Qt
 import os
-from globalvar import CLUSTER_DIR, TEMP_FILE
+from globalvar import CLUSTER_DIR, TEMP_FILE, ROOT_DIR
 from config import GlobalConfig
 from LuaTableParser import LuaTableParser
 
@@ -55,7 +55,7 @@ class ModConfigDialog(QDialog):
         index = 0
         self.opcombox = []
         for op in self.options:
-            if self.getDictValue(op, 'default') != "" and (type(op['default']) != list or type(op['default']) != dict):
+            if self.getDictValue(op, 'default') != "":
                 m = QHBoxLayout()
                 a = QLabel()
                 a.setFixedWidth(200)
@@ -65,6 +65,7 @@ class ModConfigDialog(QDialog):
                 m.addWidget(a)
                 if self.getDictValue(op, 'options'):
                     b = QComboBox()
+                    b.select = True
                     b.index = index
                     b.name = op['name']
                     self.opcombox.append(b)
@@ -81,6 +82,10 @@ class ModConfigDialog(QDialog):
                         b.setToolTip(op['options'][b.currentIndex()]['hover'])
                 else:
                     b = QLabel()
+                    self.opcombox.append(b)
+                    b.select = False
+                    b.name = op['name']
+                    b.data = op['default']
                     b.setText("请直接修改modinfo.lua")
                 m.addWidget(b)
                 mm.addLayout(m)
@@ -92,13 +97,8 @@ class ModConfigDialog(QDialog):
         return tc.get("TEMP", "cluster_index")
 
     def loadExistValue(self):
-        file = ""
         rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
-        for sdir in os.listdir(rootdir):
-            if os.path.isdir(os.path.join(rootdir, sdir)):
-                if os.path.exists(os.path.join(rootdir, sdir, "modoverrides.lua")):
-                    file = os.path.join(rootdir, sdir, "modoverrides.lua")
-                    break
+        file = os.path.join(rootdir, "modoverrides.lua")
         if os.path.exists(file):
             f = open(file, 'r', encoding='utf-8')
             data = f.read()
@@ -107,14 +107,29 @@ class ModConfigDialog(QDialog):
             p1 = LuaTableParser()
             p1.load(data)
             self.savemoddict = p1.dumpDict()
-            self.updateComboxsValue(self.savemoddict[self.moddir]["configuration_options"])
+
+        allfile = os.path.join(ROOT_DIR, "modoverrides.lua")
+        af = open(allfile, 'r', encoding='utf-8')
+        adata = af.read()
+        af.close()
+        adata = adata.replace("return", "")
+        ap1 = LuaTableParser()
+        ap1.load(adata)
+        self.allsavemoddict = ap1.dumpDict()
+
+        if self.moddir in self.allsavemoddict:
+            if self.moddir in self.savemoddict:
+                self.updateComboxsValue(self.savemoddict[self.moddir]["configuration_options"])
+            else:
+                self.updateComboxsValue(self.allsavemoddict[self.moddir]["configuration_options"])
         else:
             self.loadDefaultValue()
 
     def loadDefaultValue(self):
         c = {}
+        # print(self.options)
         for op in self.options:
-            if self.getDictValue(op, 'default') and (type(op['default']) != list or type(op['default']) != dict):
+            if self.getDictValue(op, 'default'):
                 c[op['name']] = op['default']
         self.updateComboxsValue(c)
 
@@ -135,23 +150,42 @@ class ModConfigDialog(QDialog):
             s.setToolTip(sdict[i]['hover'])
 
     def save(self):
-        if len(self.savemoddict) > 0:
+        if len(self.savemoddict) > 0 and self.moddir in self.savemoddict:
             cdict = self.savemoddict[self.moddir]["configuration_options"]
             if len(cdict) < 1:
                 cdict = {}
             for com in self.opcombox:
-                index = com.currentIndex()
-                cdict[com.name] = com.data[index]
+                if com.select:
+                    index = com.currentIndex()
+                    cdict[com.name] = com.data[index]
+                else:
+                    cdict[com.name] = com.data
             self.savemoddict[self.moddir]["configuration_options"] = cdict
             rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
-            for sdir in os.listdir(rootdir):
-                if os.path.isdir(os.path.join(rootdir, sdir)):
-                    if os.path.exists(os.path.join(rootdir, sdir, "modoverrides.lua")):
-                        file = os.path.join(rootdir, sdir, "modoverrides.lua")
-                        p1 = LuaTableParser()
-                        p1.loadDict(self.savemoddict)
-                        data = "return" + p1.dump()
-                        with open(file, 'w', encoding='utf-8') as f:
-                            f.write(data)
-                            f.close()
+
+            file = os.path.join(rootdir, "modoverrides.lua")
+            p1 = LuaTableParser()
+            p1.loadDict(self.savemoddict)
+            data = "return" + p1.dump()
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(data)
+                f.close()
+        if len(self.allsavemoddict) > 0 and self.moddir in self.allsavemoddict:
+            cdict = self.allsavemoddict[self.moddir]["configuration_options"]
+            if len(cdict) < 1:
+                cdict = {}
+            for com in self.opcombox:
+                if com.select:
+                    index = com.currentIndex()
+                    cdict[com.name] = com.data[index]
+                else:
+                    cdict[com.name] = com.data
+            self.allsavemoddict[self.moddir]["configuration_options"] = cdict
+            file = os.path.join(ROOT_DIR, "modoverrides.lua")
+            p1 = LuaTableParser()
+            p1.loadDict(self.allsavemoddict)
+            data = "return" + p1.dump()
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(data)
+                f.close()
             self.hide()

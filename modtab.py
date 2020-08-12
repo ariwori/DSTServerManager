@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QTableWidget, QVBoxLayout, QLabel, QCheckBox, QAbstractItemView, QHeaderView, QMessageBox,  QTableWidgetItem, QTextBrowser
-from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE
+from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE, ROOT_DIR
 import os
 import sys
 import json
@@ -146,14 +146,22 @@ class ModWidget(QWidget):
 
     def loadSaveMod(self):
         self.savemod = {}
-        file = ""
+        self.allsavemod = {}
+        allfile = os.path.join(ROOT_DIR, "modoverrides.lua")
+        if os.path.exists(allfile):
+            af = open(allfile, 'r', encoding='utf-8')
+            adata = af.read()
+            af.close()
+            adata = adata.replace("return", "")
+            ap1 = LuaTableParser()
+            ap1.load(adata)
+            self.allsavemod = ap1.dumpDict()
+
         rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
-        for sdir in os.listdir(rootdir):
-            if os.path.isdir(os.path.join(rootdir, sdir)):
-                if os.path.exists(os.path.join(rootdir, sdir, "modoverrides.lua")):
-                    file = os.path.join(rootdir, sdir, "modoverrides.lua")
-                    break
-        if file != "":
+
+        file = os.path.join(rootdir, "modoverrides.lua")
+
+        if os.path.exists(file):
             f = open(file, 'r', encoding='utf-8')
             data = f.read()
             f.close()
@@ -182,15 +190,14 @@ class ModWidget(QWidget):
             if w.moddir in self.savemod:
                 self.savemod[w.moddir]['enabled'] = False
         rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
-        for sdir in os.listdir(rootdir):
-            if os.path.isdir(os.path.join(rootdir, sdir)):
-                file = os.path.join(rootdir, sdir, "modoverrides.lua")
-                p1 = LuaTableParser()
-                p1.loadDict(self.savemod)
-                data = "return" + p1.dump()
-                with open(file, 'w', encoding='utf-8') as f:
-                    f.write(data)
-                    f.close()
+
+        file = os.path.join(rootdir, "modoverrides.lua")
+        p1 = LuaTableParser()
+        p1.loadDict(self.savemod)
+        data = "return" + p1.dump()
+        with open(file, 'w', encoding='utf-8') as f:
+            f.write(data)
+            f.close()
 
     def openModDir(self):
         if self.currentSelectMod == "":
@@ -225,6 +232,19 @@ class ModWidget(QWidget):
             self.btn1.setEnabled(True)
         else:
             self.btn1.setEnabled(False)
+
+        if moddir not in self.allsavemod:
+            self.allsavemod[moddir] = {}
+            self.allsavemod[moddir]["configuration_options"] = {}
+            self.allsavemod[moddir]['enabled'] = False
+
+            file = os.path.join(ROOT_DIR, "modoverrides.lua")
+            p1 = LuaTableParser()
+            p1.loadDict(self.allsavemod)
+            data = "return" + p1.dump()
+            with open(file, 'w', encoding='utf-8') as f:
+                f.write(data)
+                f.close()
 
     # 加载本地所有MOD进入列表
     def loadAllLoaclMod(self):
