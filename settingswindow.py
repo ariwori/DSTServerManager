@@ -300,19 +300,23 @@ class SettingsWidget(QWidget):
         return self.local_client_path_lineEdit.text()
 
     def select_client_dir(self):
-        client_dir = ""
+        client_dir = self.local_client_path_lineEdit.text()
+        root_dir = USER_HOME
+        if os.path.exists(client_dir):
+            root_dir = client_dir
         if sys.platform == "darwin":
-            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地客户端路径", USER_HOME, "Mac Applications (*.app);;All Files (*)")
+            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地客户端路径", root_dir, "Mac Applications (*.app);;All Files (*)")
             if fileName:
                 client_dir = fileName
         else:
-            client_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            client_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", root_dir)
             if sys.platform == "win32":
                 client_dir = client_dir.replace('/', '\\')
         # self.local_server_path_lineEdit.setText(str(server_dir))
 
         # client_dir = QFileDialog.getExistingDirectory(self, "选择本地客户端路径", USER_HOME)
-        self.local_client_path_lineEdit.setText(str(client_dir))
+        if client_dir != "":
+            self.local_client_path_lineEdit.setText(str(client_dir))
 
     def select_cluster_dir(self):
         cluster_dir = QFileDialog.getExistingDirectory(self, "选择本地存档路径", USER_HOME)
@@ -340,13 +344,17 @@ class SettingsWidget(QWidget):
             QMessageBox.warning(self, "警告", "存档文件夹不存在", QMessageBox.Yes)
 
     def select_server_dir(self):
-        server_dir = ""
+        server_dir = self.local_server_path_lineEdit.text()
+        root_dir = USER_HOME
+        if os.path.exists(server_dir):
+            root_dir = server_dir
         if sys.platform == "darwin":
-            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地服务端路径", USER_HOME, "All Files (*);;Mac Applications (*.app)")
+            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地服务端路径", root_dir, "All Files (*);;Mac Applications (*.app)")
             if fileName:
                 server_dir = fileName
         else:
-            server_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            server_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", root_dir)
             if sys.platform == "win32":
                 server_dir = server_dir.replace('/', '\\')
-        self.local_server_path_lineEdit.setText(str(server_dir))
+        if server_dir != "":
+            self.local_server_path_lineEdit.setText(str(server_dir))
