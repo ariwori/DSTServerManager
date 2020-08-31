@@ -257,6 +257,7 @@ class ShardWidget(QWidget):
         shardserverlayout.addWidget(self.ismasterR)
         shardserverlayout.addWidget(self.notmasterR)
         shardlayout.addLayout(shardserverlayout)
+
         if self.serverconfig[self.shardtabs[sindex].id].getboolean(
                 "SHARD", "is_master"):
             self.ismasterR.setChecked(True)
@@ -283,6 +284,7 @@ class ShardWidget(QWidget):
                     if oindex + 4 < 5:
                         ollayout = QHBoxLayout()
                         shardlayout.addLayout(ollayout)
+                        ollayout.setAlignment
                     ollabel = QLabel()
                     ollabel.setText(olist["name"])
                     ollabel.setFixedWidth(60)
@@ -297,15 +299,15 @@ class ShardWidget(QWidget):
                         olist["options"]["label"])
                     comboboxObject[
                         olist["key"]].valuearr = olist["options"]["value"]
-                    ollayout.addWidget(ollabel)
-                    ollayout.addWidget(comboboxObject[olist["key"]])
+                    ollayout.addWidget(ollabel, stretch=0)
+                    ollayout.addWidget(comboboxObject[olist["key"]], stretch=0)
+
+                    ollayout.addStretch()
+
                     if oindex < 3:
                         oindex += 1
                     else:
                         oindex = 0
-                    if len(optionsDict[tk]
-                           ) - 1 == ooindex and oindex != 0 and ooindex != 0:
-                        ollayout.addWidget(QLabel())
                     ooindex += 1
         else:
             tip = QLabel()

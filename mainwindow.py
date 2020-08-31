@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-import qdarkstyle
 from PyQt5.QtWidgets import (QMainWindow, QDesktopWidget, QGridLayout, QFrame,
                              QVBoxLayout, QPushButton, QWidget, QStackedLayout,
                              QSplitter, QSpacerItem, QSizePolicy, QMessageBox)
 from PyQt5.QtCore import Qt
 from maintab import MainTab
 from settingswindow import SettingsWidget
-from statusprogress import StatusProgressBar
 from globalvar import ROOT_DIR, CLUSTER_DIR, TEMP_FILE
 from config import GlobalConfig
 import shutil
@@ -20,20 +18,12 @@ class MainWindow(QMainWindow):
         self.initData()
 
     def setupUi(self):
-        # 设置窗体无边框
-        # self.setWindowFlags(Qt.FramelessWindowHint)
-        # 设置窗口名称
         self.setWindowTitle("饥荒联机版服务器管理工具")
 
         # 设置初始化的窗口大小
-        self.setMinimumWidth(800)
-        self.resize(1100, 700)
+        self.setFixedSize(1085, 700)
         # 最开始窗口要居中显示
         self.center()
-        # 设置窗口透明度
-        # self.setWindowOpacity(0.9)
-        # 设置窗口样式
-        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         # 设置整体布局 左右显示
         pagelayout = QGridLayout()
         '''
@@ -117,9 +107,6 @@ class MainWindow(QMainWindow):
         self.right_layout.addWidget(self.cluster_tab)
         self.right_layout.addWidget(self.settings_widget)
 
-        status = StatusProgressBar()
-        self.setStatusBar(status)
-
         # 划分界面
         splitterV = QSplitter(Qt.Vertical)
         splitterV.addWidget(top_left_frame)
@@ -131,14 +118,13 @@ class MainWindow(QMainWindow):
         splitterH.addWidget(right_frame)
         # 固定左侧宽度
         top_left_frame.setFixedWidth(200)
-        # bottom_left_frame.setFixedWidth(200)
 
         # 窗口部件添加布局
         widget = QWidget()
         pagelayout.addWidget(splitterH)
+
         widget.setLayout(pagelayout)
         self.setCentralWidget(widget)
-
         # 按钮函数绑定
 
     def soft_settings(self):

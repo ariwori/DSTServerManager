@@ -10,11 +10,9 @@ yapf = "*"
 [packages]
 configparser = "*"
 paramiko = "*"
-qdarkstyle = "*"
 PyQt5 = "*"
 pyinstaller = "*"
 lupa = "*"
-yapf = "*"
 
 [requires]
 python_version = "3.8"

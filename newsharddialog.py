@@ -12,7 +12,7 @@ class NewShardDialog(QDialog):
 
     def __init__(self, parent=None):
         super(NewShardDialog, self).__init__(parent)
-        self.setFixedSize(300, 200)
+        self.setFixedSize(250, 150)
 
         frame = QFrame(self)
         frame_layout = QVBoxLayout()
@@ -87,11 +87,11 @@ class NewShardDialog(QDialog):
 
     def initServerList(self, slist):
         self.serverlist = slist
-        for l in slist:
-            if l[0] != "":
-                self.server.addItem(l[0] + "@" + l[1])
+        for sl in slist:
+            if sl[0] != "":
+                self.server.addItem(sl[0] + "@" + sl[1])
             else:
-                self.server.addItem(l[1])
+                self.server.addItem(sl[1])
 
     # 保存
     def save(self):

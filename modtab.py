@@ -86,7 +86,8 @@ class ModWidget(QWidget):
     def initData(self):
         self.loadAllLoaclMod()
         self.loadSaveMod()
-        self.modSelect()
+        if self.allmodtable.rowCount() > 0:
+            self.modSelect()
 
     def getCurrentCluster(self):
         if os.path.exists(TEMP_FILE):
@@ -224,9 +225,9 @@ class ModWidget(QWidget):
             else:
                 QMessageBox.warning(self, "警告", "当前系统不支持该操作", QMessageBox.Yes)
         else:
-            QMessageBox.warning(self, "警告", "存档文件夹不存在", QMessageBox.Yes)
+            QMessageBox.warning(self, "警告", "MOD文件夹不存在", QMessageBox.Yes)
 
-    def modSelect(self, t=False):
+    def modSelect(self):
         selectmods = self.allmodtable.selectedItems()
         if len(selectmods):
             moddir = selectmods[2].text()

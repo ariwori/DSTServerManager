@@ -3,15 +3,15 @@ import os
 import sys
 import json
 import paramiko
-from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QWidget, QGroupBox,
-                             QLabel, QLineEdit, QHBoxLayout, QCheckBox,
-                             QTableWidget, QAbstractItemView, QTableWidgetItem,
-                             QMessageBox, QHeaderView, QFileDialog)
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QWidget, QGroupBox, QSizePolicy, QSpacerItem,
+                             QApplication, QLabel, QLineEdit, QHBoxLayout,
+                             QCheckBox, QTableWidget, QAbstractItemView,
+                             QTableWidgetItem, QMessageBox, QHeaderView,
+                             QFileDialog)
+from PyQt5.QtCore import Qt, QThread
 from serverdialog import ServerDialog
-from statusprogress import StatusProgressBar
+from progressbar import ProgressBar
 from globalvar import USER_HOME, CLUSTER_DIR, ROOT_DIR
-import shutil
 
 
 class SettingsWidget(QWidget):
@@ -133,6 +133,9 @@ class SettingsWidget(QWidget):
         server_edit_btn_layout.addWidget(self.edit_server_btn)
         server_edit_btn_layout.addWidget(self.delete_server_btn)
         server_edit_btn_layout.addWidget(self.test_server_btn)
+        spacerItem = QSpacerItem(20, 20, QSizePolicy.Minimum,
+                                 QSizePolicy.Expanding)
+        server_edit_btn_layout.addItem(spacerItem)
 
         server_frame_layout.addWidget(self.server_table)
         server_frame_layout.addLayout(server_edit_btn_layout)
@@ -182,7 +185,6 @@ class SettingsWidget(QWidget):
     def add_server(self, server):
         flag = True
         server_row_num = self.server_table.currentRow()
-        print(server_row_num)
         if server_row_num == -1:
             if self.is_server_not_exist(server[1]):
                 server_row_num = self.server_table.rowCount()
@@ -418,9 +420,10 @@ class SettingsWidget(QWidget):
         # server_dir = self.local_server_path_lineEdit.text()
         # if client_dir != "" and server_dir != "" and os.path.exists(client_dir) and os.path.exists(server_dir):
         #     distutils.dir_util.copy_tree(client_dir, server_dir)
-        p = StatusProgressBar(self)
-        p.showMessage("sadsadsadsads")
-        p.progressBar.setValue(20)
-        p.label.setText("状态栏4534545")
-        p.label2.setText("")
-        self.parent
+        self.ProgressBar = ProgressBar(1, 10000)
+        for i in range(1, 10000):
+            # time.sleep(0.05)
+            self.ProgressBar.setValue(i + 1)
+            QThread.msleep(10000)
+            QApplication.processEvents()
+            self.ProgressBar.close()

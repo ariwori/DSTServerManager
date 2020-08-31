@@ -17,7 +17,7 @@ class ServerDialog(QDialog):
         # self.setWindowOpacity(0.9)
         # 设置窗口样式
         # self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-        self.setFixedSize(300, 230)
+        self.setFixedSize(300, 180)
 
         frame = QFrame(self)
         frame_layout = QVBoxLayout()
@@ -38,6 +38,15 @@ class ServerDialog(QDialog):
         self.ip_lineEdit = QLineEdit()
         ip_layout.addWidget(ip_label)
         ip_layout.addWidget(self.ip_lineEdit)
+
+        port_layout = QHBoxLayout()
+        port_label = QLabel()
+        port_label.setText("端口号:")
+        port_label.setFixedWidth(70)
+        self.port_lineEdit = QLineEdit()
+        self.port_lineEdit.setText("22")
+        port_layout.addWidget(port_label)
+        port_layout.addWidget(self.port_lineEdit)
 
         user_layout = QHBoxLayout()
         user_label = QLabel()
@@ -89,7 +98,7 @@ class ServerDialog(QDialog):
         ip = self.ip_lineEdit.text()
         username = self.user_lineEdit.text()
         password = self.passwd_lineEdit.text()
-        port = 22
+        port = self.port_lineEdit.text()
         try:
             # 创建一个SSH客户端对象
             ssh = paramiko.SSHClient()
