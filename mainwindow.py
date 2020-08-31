@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import qdarkstyle
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStatusBar, QProgressBar, QLabel, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy, QMessageBox
 from PyQt5.QtCore import Qt
 from maintab import MainTab
 from settingswindow import SettingsWidget
-from globalvar import ROOT_DIR, CLUSTER_DIR, CONFIG_DIR, TEMP_FILE
+from statusprogress import StatusProgressBar
+from globalvar import ROOT_DIR, CLUSTER_DIR, TEMP_FILE
 from config import GlobalConfig
 import shutil
 
@@ -21,9 +22,7 @@ class MainWindow(QMainWindow):
         # self.setWindowFlags(Qt.FramelessWindowHint)
         # 设置窗口名称
         self.setWindowTitle("饥荒联机版服务器管理工具")
-        # 设置状态栏
-        self.status = self.statusBar()
-        self.status.showMessage("我是状态栏，用于显示程序运行信息！")
+
         # 设置初始化的窗口大小
         self.setMinimumWidth(800)
         self.resize(1100, 700)
@@ -115,6 +114,9 @@ class MainWindow(QMainWindow):
         self.cluster_tab = MainTab()
         self.right_layout.addWidget(self.cluster_tab)
         self.right_layout.addWidget(self.settings_widget)
+
+        status = StatusProgressBar()
+        self.setStatusBar(status)
 
         # 划分界面
         splitterV = QSplitter(Qt.Vertical)
