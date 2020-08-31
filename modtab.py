@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QTableWidget, QVBoxLayout, QLabel, QCheckBox, QAbstractItemView, QHeaderView, QMessageBox,  QTableWidgetItem, QTextBrowser
+from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QTableWidget,
+                             QVBoxLayout, QLabel, QCheckBox, QAbstractItemView,
+                             QHeaderView, QMessageBox, QTableWidgetItem,
+                             QTextBrowser)
 from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE, ROOT_DIR
 import os
 import sys
@@ -13,7 +16,6 @@ from modconfigdialog import ModConfigDialog
 
 
 class ModWidget(QWidget):
-
     def __init__(self, parent=None):
         super(ModWidget, self).__init__(parent)
 
@@ -31,9 +33,12 @@ class ModWidget(QWidget):
         # 只选中单行
         self.allmodtable.setSelectionMode(QAbstractItemView.SingleSelection)
         # 自动列宽，随内容
-        self.allmodtable.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.allmodtable.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.allmodtable.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.allmodtable.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)
+        self.allmodtable.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.Stretch)
+        self.allmodtable.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeToContents)
         self.allmodtable.horizontalHeader().setDefaultSectionSize(0)
 
         self.allmodtable.clicked.connect(self.modSelect)
@@ -105,7 +110,8 @@ class ModWidget(QWidget):
         olddir = os.getcwd()
         os.chdir(self.modrootdir)
         if not os.path.exists(os.path.join(root, "json.lua")):
-            shutil.copyfile(os.path.join(CONFIG_DIR, "json.lua"), os.path.join(root, "json.lua"))
+            shutil.copyfile(os.path.join(CONFIG_DIR, "json.lua"),
+                            os.path.join(root, "json.lua"))
         if os.path.exists(os.path.join(root, moddir, "modinfo.lua")):
             lua = LuaRuntime(unpack_returned_tuples=True)
             lua.require(os.path.join(moddir, "modinfo"))
@@ -113,14 +119,16 @@ class ModWidget(QWidget):
                 lua.require(os.path.join(moddir, "modinfo_chs"))
             modinfo["name"] = lua.eval('name').strip()
             modinfo["server_only_mod"] = lua.eval('server_only_mod')
-            modinfo["all_clients_require_mod"] = lua.eval('all_clients_require_mod')
+            modinfo["all_clients_require_mod"] = lua.eval(
+                'all_clients_require_mod')
             modinfo["client_only_mod"] = lua.eval('client_only_mod')
             if t != "basic":
                 modinfo["description"] = lua.eval('description').strip()
                 modinfo["author"] = lua.eval('author').strip()
                 modinfo["version"] = lua.eval('version').strip()
                 lua.require("json")
-                config_json_str = lua.eval('encode_compliant(configuration_options)')
+                config_json_str = lua.eval(
+                    'encode_compliant(configuration_options)')
                 modinfo["configuration_options"] = json.loads(config_json_str)
 
         os.chdir(olddir)
@@ -139,7 +147,8 @@ class ModWidget(QWidget):
         #     QMessageBox.warning(self, "警告", "选中MOD未启用！", QMessageBox.Yes)
         else:
             self.modConfigDialog = ModConfigDialog(self)
-            self.modConfigDialog.setWindowTitle("修改MOD "+self.modname.text()+" 配置")
+            self.modConfigDialog.setWindowTitle("修改MOD " +
+                                                self.modname.text() + " 配置")
             self.modConfigDialog.moddir = self.currentSelectMod
             self.modConfigDialog.initData(self.currentModOptions)
             self.modConfigDialog.exec()
@@ -157,7 +166,8 @@ class ModWidget(QWidget):
             ap1.load(adata)
             self.allsavemod = ap1.dumpDict()
 
-        rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
+        rootdir = os.path.join(CLUSTER_DIR,
+                               "Cluster_" + self.getCurrentCluster())
 
         file = os.path.join(rootdir, "modoverrides.lua")
 
@@ -189,7 +199,8 @@ class ModWidget(QWidget):
         else:
             if w.moddir in self.savemod:
                 self.savemod[w.moddir]['enabled'] = False
-        rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
+        rootdir = os.path.join(CLUSTER_DIR,
+                               "Cluster_" + self.getCurrentCluster())
 
         file = os.path.join(rootdir, "modoverrides.lua")
         p1 = LuaTableParser()
@@ -216,7 +227,8 @@ class ModWidget(QWidget):
 
     def modSelect(self):
         row = self.allmodtable.selectedItems()[0].row()
-        self.currentSelectModChecked = self.allmodtable.cellWidget(row, 0).isChecked()
+        self.currentSelectModChecked = self.allmodtable.cellWidget(
+            row, 0).isChecked()
         moddir = self.allmodtable.selectedItems()[2].text()
         self.currentSelectMod = moddir
         info = self.getModInfo(self.modrootdir, moddir, "detail")
@@ -227,7 +239,8 @@ class ModWidget(QWidget):
         self.modav.setText("作者：%s    版本：%s" % (a, v))
         des = self.getDictValue(info, 'description')
         self.moddesciption.setText(des)
-        self.currentModOptions = self.getDictValue(info, "configuration_options")
+        self.currentModOptions = self.getDictValue(info,
+                                                   "configuration_options")
         if self.currentModOptions and len(self.currentModOptions) > 0:
             self.btn1.setEnabled(True)
         else:
@@ -252,7 +265,8 @@ class ModWidget(QWidget):
         if self.getModDir():
             row = 0
             # 设置标题
-            self.allmodtable.setHorizontalHeaderLabels(['启用', '名称', '加载类型', ''])
+            self.allmodtable.setHorizontalHeaderLabels(
+                ['启用', '名称', '加载类型', ''])
             for modir in os.listdir(self.modrootdir):
                 modpath = os.path.join(self.modrootdir, modir)
                 if os.path.isdir(modpath):
@@ -262,7 +276,11 @@ class ModWidget(QWidget):
                     check.moddir = modir
                     check.stateChanged.connect(self.modCheck)
                     self.allmodtable.setCellWidget(row, 0, check)
-                    self.allmodtable.setItem(row, 1, QTableWidgetItem(self.getDictValue(info, 'name') and self.getDictValue(info, 'name') or modir))
+                    self.allmodtable.setItem(
+                        row, 1,
+                        QTableWidgetItem(
+                            self.getDictValue(info, 'name')
+                            and self.getDictValue(info, 'name') or modir))
                     if self.getDictValue(info, 'server_only_mod'):
                         mt = "服务端"
                     if self.getDictValue(info, 'all_clients_require_mod'):
@@ -273,4 +291,6 @@ class ModWidget(QWidget):
                     self.allmodtable.setItem(row, 3, QTableWidgetItem(modir))
                     row += 1
         else:
-            QMessageBox.warning(self, "错误警告", "客户端路径未设置或不正确，\n无法读取MOD，请到设置面板确认！", QMessageBox.Yes)
+            QMessageBox.warning(self, "错误警告",
+                                "客户端路径未设置或不正确，\n无法读取MOD，请到设置面板确认！",
+                                QMessageBox.Yes)
