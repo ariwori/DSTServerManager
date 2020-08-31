@@ -379,8 +379,9 @@ class SettingsWidget(QWidget):
         # server_dir = self.local_server_path_lineEdit.text()
         # if client_dir != "" and server_dir != "" and os.path.exists(client_dir) and os.path.exists(server_dir):
         #     distutils.dir_util.copy_tree(client_dir, server_dir)
-        p = StatusProgressBar()
+        p = StatusProgressBar(self)
         p.showMessage("sadsadsadsads")
         p.progressBar.setValue(20)
         p.label.setText("状态栏4534545")
         p.label2.setText("")
+        self.parent
