@@ -6,7 +6,9 @@ import paramiko
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QWidget, QGroupBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox, QTableWidget, QAbstractItemView, QTableWidgetItem, QMessageBox, QHeaderView, QFileDialog
 from PyQt5.QtCore import Qt
 from serverdialog import ServerDialog
+from statusprogress import StatusProgressBar
 from globalvar import USER_HOME, CLUSTER_DIR, ROOT_DIR
+import shutil
 
 
 class SettingsWidget(QWidget):
@@ -54,8 +56,20 @@ class SettingsWidget(QWidget):
         path_widget3_layout.addWidget(self.local_cluster_path_lineEdit)
         path_widget3_layout.addWidget(self.local_cluster_path_btn)
 
-        path_settings_groupbox_layout.addLayout(path_widget1_layout)
-        path_settings_groupbox_layout.addLayout(path_widget2_layout)
+        exe_V = QVBoxLayout()
+        exe_V.addLayout(path_widget1_layout)
+        exe_V.addLayout(path_widget2_layout)
+
+        self.move_mod_button = QPushButton()
+        self.move_mod_button.setFixedHeight(50)
+        self.move_mod_button.setText("从客户端复制\nMOD到服务端")
+        self.move_mod_button.clicked.connect(self.copy_mods)
+
+        sss = QHBoxLayout()
+        sss.addLayout(exe_V)
+        sss.addWidget(self.move_mod_button)
+
+        path_settings_groupbox_layout.addLayout(sss)
         path_settings_groupbox_layout.addLayout(path_widget3_layout)
         path_settings_groupbox.setLayout(path_settings_groupbox_layout)
 
@@ -211,6 +225,7 @@ class SettingsWidget(QWidget):
                     # 创建一个SSH客户端对象
                     ssh = paramiko.SSHClient()
                     # 设置访问策略
+                    ssh.load_system_host_keys()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     # 与远程主机进行连接
                     ssh.connect(hostname=ip, port=22, username=username, password=passwd)
@@ -350,3 +365,14 @@ class SettingsWidget(QWidget):
             if sys.platform == "win32":
                 server_dir = server_dir.replace('/', '\\')
         self.local_server_path_lineEdit.setText(str(server_dir))
+
+    def copy_mods(self):
+        # client_dir = self.local_client_path_lineEdit.text()
+        # server_dir = self.local_server_path_lineEdit.text()
+        # if client_dir != "" and server_dir != "" and os.path.exists(client_dir) and os.path.exists(server_dir):
+        #     distutils.dir_util.copy_tree(client_dir, server_dir)
+        p = StatusProgressBar()
+        p.showMessage("sadsadsadsads")
+        p.progressBar.setValue(20)
+        p.label.setText("状态栏4534545")
+        p.label2.setText("")

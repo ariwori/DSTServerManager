@@ -93,6 +93,7 @@ class ServerDialog(QDialog):
             # 创建一个SSH客户端对象
             ssh = paramiko.SSHClient()
             # 设置访问策略
+            ssh.load_system_host_keys()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             # 与远程主机进行连接
             ssh.connect(hostname=ip, port=port, username=username, password=password)
