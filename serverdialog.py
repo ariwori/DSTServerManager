@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QDialog, QFrame, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QMessageBox
+from PyQt5.QtWidgets import (QDialog, QFrame, QLabel, QLineEdit, QPushButton,
+                             QHBoxLayout, QVBoxLayout, QMessageBox)
 from PyQt5.QtCore import pyqtSignal
 import paramiko
 
@@ -96,8 +97,14 @@ class ServerDialog(QDialog):
             ssh.load_system_host_keys()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             # 与远程主机进行连接
-            ssh.connect(hostname=ip, port=port, username=username, password=password)
-            button = QMessageBox.information(self, "连接正确", "服务器连接测试通过!\n是否保存新的服务器？", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            ssh.connect(hostname=ip,
+                        port=port,
+                        username=username,
+                        password=password)
+            button = QMessageBox.information(self, "连接正确",
+                                             "服务器连接测试通过!\n是否保存新的服务器？",
+                                             QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.Yes)
             if button == QMessageBox.Yes:
                 self.serverSignal.emit([name, ip, username, password, tips])
         except Exception as e:

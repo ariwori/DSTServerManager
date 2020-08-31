@@ -3,7 +3,10 @@ import os
 import sys
 import json
 import paramiko
-from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QWidget, QGroupBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox, QTableWidget, QAbstractItemView, QTableWidgetItem, QMessageBox, QHeaderView, QFileDialog
+from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QWidget, QGroupBox,
+                             QLabel, QLineEdit, QHBoxLayout, QCheckBox,
+                             QTableWidget, QAbstractItemView, QTableWidgetItem,
+                             QMessageBox, QHeaderView, QFileDialog)
 from PyQt5.QtCore import Qt
 from serverdialog import ServerDialog
 from statusprogress import StatusProgressBar
@@ -105,14 +108,17 @@ class SettingsWidget(QWidget):
         # 禁止编辑
         self.server_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # 设置标题
-        self.server_table.setHorizontalHeaderLabels(['名称', 'IP或域名', '用户名', '密码', '备注'])
+        self.server_table.setHorizontalHeaderLabels(
+            ['名称', 'IP或域名', '用户名', '密码', '备注'])
         # 设置选择整行
         self.server_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         # 只选中单行
         self.server_table.setSelectionMode(QAbstractItemView.SingleSelection)
         # 自动列宽，随内容
-        self.server_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.server_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.server_table.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)
+        self.server_table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)
 
         server_edit_btn_layout = QVBoxLayout()
         self.add_new_server_btn = QPushButton()
@@ -187,19 +193,27 @@ class SettingsWidget(QWidget):
         if flag:
             self.serverDialog.hide()
             for col in range(5):
-                self.server_table.setItem(server_row_num, col, QTableWidgetItem(server[col]))
-                self.server_table.item(server_row_num, col).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+                self.server_table.setItem(server_row_num, col,
+                                          QTableWidgetItem(server[col]))
+                self.server_table.item(server_row_num,
+                                       col).setTextAlignment(Qt.AlignHCenter
+                                                             | Qt.AlignVCenter)
 
     def edit_server(self):
         row = self.server_table.currentRow()
         if row > -1:
             serverDialog = ServerDialog(self)
             serverDialog.setWindowTitle("修改服务器")
-            serverDialog.name_lineEdit.setText(self.server_table.item(row, 0).text())
-            serverDialog.ip_lineEdit.setText(self.server_table.item(row, 1).text())
-            serverDialog.user_lineEdit.setText(self.server_table.item(row, 2).text())
-            serverDialog.passwd_lineEdit.setText(self.server_table.item(row, 3).text())
-            serverDialog.tips_lineEdit.setText(self.server_table.item(row, 4).text())
+            serverDialog.name_lineEdit.setText(
+                self.server_table.item(row, 0).text())
+            serverDialog.ip_lineEdit.setText(
+                self.server_table.item(row, 1).text())
+            serverDialog.user_lineEdit.setText(
+                self.server_table.item(row, 2).text())
+            serverDialog.passwd_lineEdit.setText(
+                self.server_table.item(row, 3).text())
+            serverDialog.tips_lineEdit.setText(
+                self.server_table.item(row, 4).text())
             serverDialog.serverSignal.connect(self.add_server)
             serverDialog.exec()
         else:
@@ -217,7 +231,8 @@ class SettingsWidget(QWidget):
         if row > -1:
             ip = self.server_table.item(row, 1).text()
             if ip == "127.0.0.1":
-                QMessageBox.information(self, "无需测试", "本地服请确保本地已安装服务端且已配好路径！", QMessageBox.Yes)
+                QMessageBox.information(self, "无需测试", "本地服请确保本地已安装服务端且已配好路径！",
+                                        QMessageBox.Yes)
             else:
                 username = self.server_table.item(row, 2).text()
                 passwd = self.server_table.item(row, 3).text()
@@ -228,8 +243,12 @@ class SettingsWidget(QWidget):
                     ssh.load_system_host_keys()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     # 与远程主机进行连接
-                    ssh.connect(hostname=ip, port=22, username=username, password=passwd)
-                    QMessageBox.information(self, "连接正确", "服务器连接测试通过!", QMessageBox.Yes)
+                    ssh.connect(hostname=ip,
+                                port=22,
+                                username=username,
+                                password=passwd)
+                    QMessageBox.information(self, "连接正确", "服务器连接测试通过!",
+                                            QMessageBox.Yes)
                 except Exception as e:
                     QMessageBox.critical(self, "连接错误", str(e), QMessageBox.Yes)
                 finally:
@@ -255,9 +274,12 @@ class SettingsWidget(QWidget):
     def init_settings_data(self):
         settings = self.read_json_data('settings.json')
         if settings:
-            self.local_client_path_lineEdit.setText(settings['localclientpath'])
-            self.local_server_path_lineEdit.setText(settings['localserverpath'])
-            self.local_cluster_path_lineEdit.setText(settings['localclusterpath'])
+            self.local_client_path_lineEdit.setText(
+                settings['localclientpath'])
+            self.local_server_path_lineEdit.setText(
+                settings['localserverpath'])
+            self.local_cluster_path_lineEdit.setText(
+                settings['localclusterpath'])
             self.sc_key_lineEdit.setText(settings['sckey'])
             self.sc_enable_checkBox.setChecked(settings['scenable'])
             self.server_token_lineEdit.setText(settings['servertoken'])
@@ -269,11 +291,13 @@ class SettingsWidget(QWidget):
         slist = []
         rowCount = self.server_table.rowCount()
         for row in range(rowCount):
-            slist.append([self.server_table.item(row, 0).text(),
-                         self.server_table.item(row, 1).text(),
-                         self.server_table.item(row, 2).text(),
-                         self.server_table.item(row, 3).text(),
-                         self.server_table.item(row, 4).text()])
+            slist.append([
+                self.server_table.item(row, 0).text(),
+                self.server_table.item(row, 1).text(),
+                self.server_table.item(row, 2).text(),
+                self.server_table.item(row, 3).text(),
+                self.server_table.item(row, 4).text()
+            ])
         return slist
 
     def set_server_list(self, serverlist):
@@ -288,16 +312,23 @@ class SettingsWidget(QWidget):
             self.server_table.setItem(row, 2, QTableWidgetItem(list[2]))
             self.server_table.setItem(row, 3, QTableWidgetItem(list[3]))
             self.server_table.setItem(row, 4, QTableWidgetItem(list[4]))
-            self.server_table.item(row, 0).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.server_table.item(row, 1).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.server_table.item(row, 2).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.server_table.item(row, 3).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            self.server_table.item(row, 4).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.server_table.item(row, 0).setTextAlignment(Qt.AlignHCenter
+                                                            | Qt.AlignVCenter)
+            self.server_table.item(row, 1).setTextAlignment(Qt.AlignHCenter
+                                                            | Qt.AlignVCenter)
+            self.server_table.item(row, 2).setTextAlignment(Qt.AlignHCenter
+                                                            | Qt.AlignVCenter)
+            self.server_table.item(row, 3).setTextAlignment(Qt.AlignHCenter
+                                                            | Qt.AlignVCenter)
+            self.server_table.item(row, 4).setTextAlignment(Qt.AlignHCenter
+                                                            | Qt.AlignVCenter)
             row += 1
             if not flag:
-                self.set_server_list([["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
+                self.set_server_list(
+                    [["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
         if 0 == len(serverlist):
-            self.set_server_list([["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
+            self.set_server_list(
+                [["本地服务器", "127.0.0.1", "如无必要", "请勿删除", "这个选项"]])
 
     # 保存设置
     def save_settings_data(self):
@@ -315,24 +346,33 @@ class SettingsWidget(QWidget):
         return self.local_client_path_lineEdit.text()
 
     def select_client_dir(self):
-        client_dir = ""
+        client_dir = self.local_client_path_lineEdit.text()
+        root_dir = USER_HOME
+        if os.path.exists(client_dir):
+            root_dir = client_dir
         if sys.platform == "darwin":
-            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地客户端路径", USER_HOME, "Mac Applications (*.app);;All Files (*)")
+            fileName, _ = QFileDialog.getOpenFileName(
+                self, "选择本地客户端路径", root_dir,
+                "Mac Applications (*.app);;All Files (*)")
             if fileName:
                 client_dir = fileName
         else:
-            client_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            client_dir = QFileDialog.getExistingDirectory(
+                self, "选择本地服务端路径", root_dir)
             if sys.platform == "win32":
                 client_dir = client_dir.replace('/', '\\')
         # self.local_server_path_lineEdit.setText(str(server_dir))
 
         # client_dir = QFileDialog.getExistingDirectory(self, "选择本地客户端路径", USER_HOME)
-        self.local_client_path_lineEdit.setText(str(client_dir))
+        if client_dir != "":
+            self.local_client_path_lineEdit.setText(str(client_dir))
 
     def select_cluster_dir(self):
-        cluster_dir = QFileDialog.getExistingDirectory(self, "选择本地存档路径", USER_HOME)
+        cluster_dir = QFileDialog.getExistingDirectory(self, "选择本地存档路径",
+                                                       USER_HOME)
         # 官方存档路径
-        cluster = os.path.join(USER_HOME, 'Documents', 'Klei', 'DoNotStarveTogether')
+        cluster = os.path.join(USER_HOME, 'Documents', 'Klei',
+                               'DoNotStarveTogether')
         if cluster_dir != cluster:
             self.local_cluster_path_lineEdit.setText(str(cluster_dir))
         else:
@@ -355,24 +395,32 @@ class SettingsWidget(QWidget):
             QMessageBox.warning(self, "警告", "存档文件夹不存在", QMessageBox.Yes)
 
     def select_server_dir(self):
-        server_dir = ""
+        server_dir = self.local_server_path_lineEdit.text()
+        root_dir = USER_HOME
+        if os.path.exists(server_dir):
+            root_dir = server_dir
         if sys.platform == "darwin":
-            fileName, _ = QFileDialog.getOpenFileName(self, "选择本地服务端路径", USER_HOME, "All Files (*);;Mac Applications (*.app)")
+            fileName, _ = QFileDialog.getOpenFileName(
+                self, "选择本地服务端路径", root_dir,
+                "All Files (*);;Mac Applications (*.app)")
             if fileName:
                 server_dir = fileName
         else:
-            server_dir = QFileDialog.getExistingDirectory(self, "选择本地服务端路径", USER_HOME)
+            server_dir = QFileDialog.getExistingDirectory(
+                self, "选择本地服务端路径", root_dir)
             if sys.platform == "win32":
                 server_dir = server_dir.replace('/', '\\')
-        self.local_server_path_lineEdit.setText(str(server_dir))
+        if server_dir != "":
+            self.local_server_path_lineEdit.setText(str(server_dir))
 
     def copy_mods(self):
         # client_dir = self.local_client_path_lineEdit.text()
         # server_dir = self.local_server_path_lineEdit.text()
         # if client_dir != "" and server_dir != "" and os.path.exists(client_dir) and os.path.exists(server_dir):
         #     distutils.dir_util.copy_tree(client_dir, server_dir)
-        p = StatusProgressBar()
+        p = StatusProgressBar(self)
         p.showMessage("sadsadsadsads")
         p.progressBar.setValue(20)
         p.label.setText("状态栏4534545")
         p.label2.setText("")
+        self.parent

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# import qdarkstyle
-from PyQt5.QtWidgets import QDialog, QFrame, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QComboBox, QStyledItemDelegate, QButtonGroup, QRadioButton
+from PyQt5.QtWidgets import (QDialog, QFrame, QLabel, QLineEdit, QPushButton,
+                             QHBoxLayout, QVBoxLayout, QComboBox,
+                             QStyledItemDelegate, QButtonGroup, QRadioButton)
 from PyQt5.QtCore import pyqtSignal
 
 
@@ -29,7 +30,9 @@ class NewShardDialog(QDialog):
         ip_label.setText("服务器:")
         ip_label.setFixedWidth(70)
         self.server = QComboBox()
-        self.server.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+        self.server.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }"
+        )
         self.server.setItemDelegate(QStyledItemDelegate())
         ip_layout.addWidget(ip_label)
         ip_layout.addWidget(self.server)
@@ -56,7 +59,9 @@ class NewShardDialog(QDialog):
         type_label.setText("世界类型:")
         type_label.setFixedWidth(70)
         self.type = QComboBox()
-        self.type.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+        self.type.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }"
+        )
         self.type.setItemDelegate(QStyledItemDelegate())
         self.type.addItems(["地面", "洞穴", "挂机", "熔炉", "暴食"])
         type_layout.addWidget(type_label)
@@ -84,7 +89,7 @@ class NewShardDialog(QDialog):
         self.serverlist = slist
         for l in slist:
             if l[0] != "":
-                self.server.addItem(l[0]+"@"+l[1])
+                self.server.addItem(l[0] + "@" + l[1])
             else:
                 self.server.addItem(l[1])
 

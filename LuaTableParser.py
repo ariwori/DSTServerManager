@@ -196,7 +196,7 @@ class LuaTableReader:
                 break
             elif c in '\'\"':
                 ret += '\\' + c
-            else: # TODO if c is '\n', what should we do ?
+            else:  # TODO if c is '\n', what should we do ?
                 if c == '\\':  # handle escape sequences
                     ret += '\\' + self.__next()
                 else:
@@ -210,7 +210,7 @@ class LuaTableReader:
     # if ok, return a normal string delimited by '"'
     def __try_read_xstring(self):
         prevp, index = self.__prevp, self.__index
-        c = self.__next() # assert c == '['
+        c = self.__next()  # assert c == '['
         if c != '[':
             raise Exception('assertion failed')
 
@@ -263,7 +263,8 @@ class LuaTableReader:
     # get the next number, using C-like syntax
     def __next_number(self):
         ret = ''
-        c = self.__next()  # we have ensured that c is a digit, '.', '+', or '-'
+        c = self.__next(
+        )  # we have ensured that c is a digit, '.', '+', or '-'
         if c.isdigit():
             self.__backward()
             ret += self.__read_digits()
@@ -309,7 +310,7 @@ class LuaTableReader:
 
     # get the next token (name, or identifier)
     def __next_token(self):
-        ret = self.__next() # assert ret.isalpha() or ret == '_'
+        ret = self.__next()  # assert ret.isalpha() or ret == '_'
         c = self.__next()
         while c.isalnum() or c == '_':
             ret += c
@@ -328,10 +329,10 @@ class LuaTableReader:
                 self.__do_swallow_comments()
                 return True
             elif x is not None:
-                self.__backward() # unget x
-            self.__backward() # unget c
+                self.__backward()  # unget x
+            self.__backward()  # unget c
         elif c is not None:
-            self.__backward() # unget c
+            self.__backward()  # unget c
         return False
 
     def __do_swallow_comments(self):
@@ -461,7 +462,7 @@ class LuaTableParser:
             n = len(tmp)
             for i in range(n):
                 if tmp[i] is not None:
-                    ret[i+1] = tmp[i]
+                    ret[i + 1] = tmp[i]
             return ret
         return tmp
 
@@ -471,7 +472,7 @@ class LuaTableParser:
             if item < 1 or item > n:
                 raise IndexError('table index out of range')
             else:
-                return self.__table[item-1]
+                return self.__table[item - 1]
         else:
             return self.__table[item]
 
@@ -500,7 +501,7 @@ class LuaTableParser:
             l = len(lst)
             for i in range(l):
                 if lst[i] is not None:
-                    dct[i+1] = lst[i]
+                    dct[i + 1] = lst[i]
             return dct
 
     def __parse_field(self, field):
@@ -514,9 +515,9 @@ class LuaTableParser:
         # the table index must be a string or a number
         n = len(index)
         if n > 1 and index.startswith('"') and index.endswith('"'):
-            return self.__eval_string(index[1:n-1])
+            return self.__eval_string(index[1:n - 1])
         elif n > 1 and index.startswith('\'') and index.endswith('\''):
-            return self.__eval_string(index[1:n-1])
+            return self.__eval_string(index[1:n - 1])
         else:
             try:
                 x = Utils.str_to_num(index)
@@ -541,9 +542,9 @@ class LuaTableParser:
             return self.__eval_string(expr[1:n - 1])
         try:
             x = Utils.str_to_num(expr)
-        except: # nil
+        except:  # nil
             return None
-        else:   # number
+        else:  # number
             return x
 
     def __eval_string(self, s):
@@ -584,11 +585,18 @@ class LuaTableParser:
                                 + '\", only ASCII code is allowed')
             return chr(y), i
         else:
-            return self.__eval_esc_seq(c), i+1
+            return self.__eval_esc_seq(c), i + 1
 
     def __eval_esc_seq(self, c):
-        esc_seq_table = {'a': '\a', 'b': '\b', 'f': '\f', 'n': '\n',
-                         'r': '\r', 't': '\t', 'v': '\v'}
+        esc_seq_table = {
+            'a': '\a',
+            'b': '\b',
+            'f': '\f',
+            'n': '\n',
+            'r': '\r',
+            't': '\t',
+            'v': '\v'
+        }
         if c in esc_seq_table:
             return esc_seq_table[c]
         elif c in '\\\'\"[]':
@@ -596,8 +604,15 @@ class LuaTableParser:
         return '\\' + c
 
     def __dump_char(self, c):
-        esc_seq_table = {'\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n',
-                         '\r': 'r', '\t': 't', '\v': 'v'}
+        esc_seq_table = {
+            '\a': 'a',
+            '\b': 'b',
+            '\f': 'f',
+            '\n': 'n',
+            '\r': 'r',
+            '\t': 't',
+            '\v': 'v'
+        }
         if c in esc_seq_table:
             return '\\' + esc_seq_table[c]
         elif c in '\\\'\"[]':

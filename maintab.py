@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QTabWidget, QLabel
+from PyQt5.QtWidgets import QTabWidget
 from clustertab import ClusterWidget
 from shardtab import ShardWidget
 from modtab import ModWidget

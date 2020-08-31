@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QRadioButton, QComboBox, QStyledItemDelegate, QButtonGroup, QTabWidget, QScrollArea
+from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QVBoxLayout,
+                             QLabel, QRadioButton, QComboBox,
+                             QStyledItemDelegate, QButtonGroup, QTabWidget,
+                             QScrollArea)
 from PyQt5.QtCore import Qt
 from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE
 import os
@@ -14,7 +17,6 @@ from clustertab import ClusterWidget
 
 
 class ShardWidget(QWidget):
-
     def __init__(self, parent=None):
         super(ShardWidget, self).__init__(parent)
 
@@ -70,36 +72,49 @@ class ShardWidget(QWidget):
 
     # 初始化世界配置从文件加载世界配置并写入UI
     def loadServerIni(self, wtype, wid):
-        file = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), wtype + "_" + str(wid), "server.ini")
+        file = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(),
+                            wtype + "_" + str(wid), "server.ini")
         if not os.path.exists(file):
             file = os.path.join(CONFIG_DIR, "server.ini")
         self.serverconfig[wid] = GlobalConfig(file)
-        self.serverconfig[wid].server_port = self.serverconfig[wid].get("NETWORK", "server_port")
-        self.serverconfig[wid].is_master = self.serverconfig[wid].getboolean("SHARD", "is_master")
-        self.serverconfig[wid].name = self.serverconfig[wid].get("SHARD", "name")
+        self.serverconfig[wid].server_port = self.serverconfig[wid].get(
+            "NETWORK", "server_port")
+        self.serverconfig[wid].is_master = self.serverconfig[wid].getboolean(
+            "SHARD", "is_master")
+        self.serverconfig[wid].name = self.serverconfig[wid].get(
+            "SHARD", "name")
         self.serverconfig[wid].id = self.serverconfig[wid].get("SHARD", "id")
-        self.serverconfig[wid].master_server_port = self.serverconfig[wid].get("STEAM", "master_server_port")
-        self.serverconfig[wid].authentication_port = self.serverconfig[wid].get("STEAM", "authentication_port")
+        self.serverconfig[wid].master_server_port = self.serverconfig[wid].get(
+            "STEAM", "master_server_port")
+        self.serverconfig[wid].authentication_port = self.serverconfig[
+            wid].get("STEAM", "authentication_port")
         if self.serverconfig[wid].has_section("SERVER"):
-            self.serverconfig[wid].ip = self.serverconfig[wid].get("SERVER", "ip")
-            self.serverconfig[wid].alias = self.serverconfig[wid].get("SERVER", "alias")
+            self.serverconfig[wid].ip = self.serverconfig[wid].get(
+                "SERVER", "ip")
+            self.serverconfig[wid].alias = self.serverconfig[wid].get(
+                "SERVER", "alias")
         else:
             self.serverconfig[wid].add_section("SERVER")
             self.serverconfig[wid].set("SERVER", "ip", "127.0.0.1")
-            self.serverconfig[wid].set("SERVER", "alias", wtype + "_" + str(wid))
+            self.serverconfig[wid].set("SERVER", "alias",
+                                       wtype + "_" + str(wid))
 
         if self.serverconfig[wid].server_port == "":
-            self.serverconfig[wid].set("NETWORK", "server_port", str(10998+random.randint(1, 100)))
+            self.serverconfig[wid].set("NETWORK", "server_port",
+                                       str(10998 + random.randint(1, 100)))
         if self.serverconfig[wid].name == "":
             self.serverconfig[wid].set("SHARD", "name", wtype + str(wid))
         if self.serverconfig[wid].id == "":
             self.serverconfig[wid].set("SHARD", "id", str(wid))
         if self.serverconfig[wid].master_server_port == "":
-            self.serverconfig[wid].set("STEAM", "master_server_port", str(27016+random.randint(1, 100)))
+            self.serverconfig[wid].set("STEAM", "master_server_port",
+                                       str(27016 + random.randint(1, 100)))
         if self.serverconfig[wid].authentication_port == "":
-            self.serverconfig[wid].set("STEAM", "authentication_port", str(8766+random.randint(1, 100)))
+            self.serverconfig[wid].set("STEAM", "authentication_port",
+                                       str(8766 + random.randint(1, 100)))
         if self.serverconfig[wid].alias == "":
-            self.serverconfig[wid].set("SERVER", "alias", wtype + "_" + str(wid))
+            self.serverconfig[wid].set("SERVER", "alias",
+                                       wtype + "_" + str(wid))
 
     def setServerIni(self, wid):
         self.serverconfig[wid].set("SERVER", "ip", self.getShardIP())
@@ -110,7 +125,9 @@ class ShardWidget(QWidget):
         self.serverconfig[wid].setboolean("SHARD", "is_master", ismaster)
 
     def savaServerIni(self, wtype, wid):
-        inidir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), wtype + "_" + str(wid))
+        inidir = os.path.join(CLUSTER_DIR,
+                              "Cluster_" + self.getCurrentCluster(),
+                              wtype + "_" + str(wid))
         file = os.path.join(inidir, "server.ini")
         if not os.path.exists(inidir):
             os.mkdir(inidir)
@@ -143,7 +160,10 @@ class ShardWidget(QWidget):
             return "1"
 
     def loadShardValue(self, w, combos):
-        levelfname = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), w.type + "_" + str(w.id), "leveldataoverride.lua")
+        levelfname = os.path.join(CLUSTER_DIR,
+                                  "Cluster_" + self.getCurrentCluster(),
+                                  w.type + "_" + str(w.id),
+                                  "leveldataoverride.lua")
         saveFlag = False
         if not os.path.exists(levelfname):
             levelfname = os.path.join(CONFIG_DIR, w.type + ".lua")
@@ -181,7 +201,8 @@ class ShardWidget(QWidget):
             cindex = 0
             for file in exist_shards:
                 arr = file.split("_")
-                if len(arr) > 1 and arr[0] in shard_type and file != "cluster_token.txt":
+                if len(arr) > 1 and arr[
+                        0] in shard_type and file != "cluster_token.txt":
                     self.addShardTab(arr[0], int(arr[1]), shard=[])
                     cindex += 1
 
@@ -189,16 +210,22 @@ class ShardWidget(QWidget):
         sindex = len(self.shardtabs)
         self.shardtabs.append(QWidget())
         self.shardtabs[sindex].type = world
-        self.shardtabs[sindex].id = wid == 0 and str(random.randint(100, 999)) or wid
-        self.loadServerIni(self.shardtabs[sindex].type, self.shardtabs[sindex].id)
+        self.shardtabs[sindex].id = wid == 0 and str(random.randint(
+            100, 999)) or wid
+        self.loadServerIni(self.shardtabs[sindex].type,
+                           self.shardtabs[sindex].id)
         wid = self.shardtabs[sindex].id
         if len(shard) > 0:
             self.serverconfig[wid].set("SERVER", "ip", shard[1])
             self.serverconfig[wid].set("SERVER", "alias", shard[0])
             self.serverconfig[wid].setboolean("SHARD", "is_master", shard[2])
-            self.savaServerIni(self.shardtabs[sindex].type, self.shardtabs[sindex].id)
+            self.savaServerIni(self.shardtabs[sindex].type,
+                               self.shardtabs[sindex].id)
 
-        self.shardtab.addTab(self.shardtabs[sindex], self.serverconfig[wid].get("SERVER", "alias") + " " + str(sindex + 1))
+        self.shardtab.addTab(
+            self.shardtabs[sindex],
+            self.serverconfig[wid].get("SERVER", "alias") + " " +
+            str(sindex + 1))
 
         shardlayout = QVBoxLayout()
         comboboxObject = {}
@@ -209,7 +236,9 @@ class ShardWidget(QWidget):
         serverlaber.setText("服务器:")
         serverlaber.setFixedWidth(60)
         self.serverCombox = QComboBox()
-        self.serverCombox.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+        self.serverCombox.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }"
+        )
         self.serverCombox.setItemDelegate(QStyledItemDelegate())
         shardserverlayout.addWidget(serverlaber)
         shardserverlayout.addWidget(self.serverCombox)
@@ -228,14 +257,23 @@ class ShardWidget(QWidget):
         shardserverlayout.addWidget(self.ismasterR)
         shardserverlayout.addWidget(self.notmasterR)
         shardlayout.addLayout(shardserverlayout)
-        if self.serverconfig[self.shardtabs[sindex].id].getboolean("SHARD", "is_master"):
+        if self.serverconfig[self.shardtabs[sindex].id].getboolean(
+                "SHARD", "is_master"):
             self.ismasterR.setChecked(True)
         else:
             self.notmasterR.setChecked(True)
-        self.setShardIP(self.serverCombox, self.serverconfig[self.shardtabs[sindex].id].get("SERVER", "ip"))
+        self.setShardIP(
+            self.serverCombox,
+            self.serverconfig[self.shardtabs[sindex].id].get("SERVER", "ip"))
         if world == "forest" or world == "caves":
             optionsDict = self.readShardOptions(world)
-            typedict = {"environment": "世界环境", "source": "资源", "food": "食物", "animal": "动物", "monster": "怪物"}
+            typedict = {
+                "environment": "世界环境",
+                "source": "资源",
+                "food": "食物",
+                "animal": "动物",
+                "monster": "怪物"
+            }
             for tk, tv in typedict.items():
                 tlabel = QPushButton()
                 tlabel.setText(tv)
@@ -250,17 +288,23 @@ class ShardWidget(QWidget):
                     ollabel.setFixedWidth(60)
                     comboboxObject[olist["key"]] = QComboBox()
                     comboboxObject[olist["key"]].setFixedWidth(120)
-                    comboboxObject[olist["key"]].setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 80px; }")
-                    comboboxObject[olist["key"]].setItemDelegate(QStyledItemDelegate())
-                    comboboxObject[olist["key"]].addItems(olist["options"]["label"])
-                    comboboxObject[olist["key"]].valuearr = olist["options"]["value"]
+                    comboboxObject[olist["key"]].setStyleSheet(
+                        "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 80px; }"
+                    )
+                    comboboxObject[olist["key"]].setItemDelegate(
+                        QStyledItemDelegate())
+                    comboboxObject[olist["key"]].addItems(
+                        olist["options"]["label"])
+                    comboboxObject[
+                        olist["key"]].valuearr = olist["options"]["value"]
                     ollayout.addWidget(ollabel)
                     ollayout.addWidget(comboboxObject[olist["key"]])
                     if oindex < 3:
                         oindex += 1
                     else:
                         oindex = 0
-                    if len(optionsDict[tk])-1 == ooindex and oindex != 0 and ooindex != 0:
+                    if len(optionsDict[tk]
+                           ) - 1 == ooindex and oindex != 0 and ooindex != 0:
                         ollayout.addWidget(QLabel())
                     ooindex += 1
         else:
@@ -271,7 +315,8 @@ class ShardWidget(QWidget):
         self.shardtabs[sindex].setLayout(shardlayout)
 
         self.optionsCombobox[self.shardtabs[sindex].id] = comboboxObject
-        self.loadShardValue(self.shardtabs[sindex], self.optionsCombobox[self.shardtabs[sindex].id])
+        self.loadShardValue(self.shardtabs[sindex],
+                            self.optionsCombobox[self.shardtabs[sindex].id])
 
     def readShardOptions(self, filename):
         file = os.path.join(CONFIG_DIR, filename + ".json")
@@ -285,13 +330,16 @@ class ShardWidget(QWidget):
     def saveShardLevelData(self):
         for w in self.shardtabs:
             # w = self.shardtab.currentWidget()
-            sdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), w.type + "_" + str(w.id))
+            sdir = os.path.join(CLUSTER_DIR,
+                                "Cluster_" + self.getCurrentCluster(),
+                                w.type + "_" + str(w.id))
             levelfname = os.path.join(sdir, "leveldataoverride.lua")
             # print(w.shardValueDict)
             if w.type == "forest" or w.type == "caves":
                 for comk, comv in self.optionsCombobox[w.id].items():
                     comindex = comv.currentIndex()
-                    w.shardValueDict['overrides'][comk] = comv.valuearr[comindex]
+                    w.shardValueDict['overrides'][comk] = comv.valuearr[
+                        comindex]
             p1 = LuaTableParser()
             p1.loadDict(w.shardValueDict)
             data = "return" + p1.dump()
@@ -306,7 +354,9 @@ class ShardWidget(QWidget):
     def deleteShard(self):
         if len(self.shardtabs) > 0:
             w = self.shardtab.currentWidget()
-            sdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster(), w.type + "_" + str(w.id))
+            sdir = os.path.join(CLUSTER_DIR,
+                                "Cluster_" + self.getCurrentCluster(),
+                                w.type + "_" + str(w.id))
             if os.path.exists(sdir):
                 shutil.rmtree(sdir)
             ci = self.shardtab.currentIndex()

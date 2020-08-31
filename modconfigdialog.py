@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QComboBox, QStyledItemDelegate, QScrollArea, QWidget
+from PyQt5.QtWidgets import (QDialog, QLabel, QPushButton, QHBoxLayout,
+                             QVBoxLayout, QComboBox, QStyledItemDelegate,
+                             QScrollArea, QWidget)
 from PyQt5.QtCore import Qt
 import os
 from globalvar import CLUSTER_DIR, TEMP_FILE, ROOT_DIR
@@ -9,7 +11,6 @@ from LuaTableParser import LuaTableParser
 
 
 class ModConfigDialog(QDialog):
-
     def __init__(self, parent=None):
         super(ModConfigDialog, self).__init__(parent)
 
@@ -70,7 +71,9 @@ class ModConfigDialog(QDialog):
                     b.name = op['name']
                     self.opcombox.append(b)
                     b.setFixedWidth(150)
-                    b.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+                    b.setStyleSheet(
+                        "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }"
+                    )
                     b.setItemDelegate(QStyledItemDelegate())
                     b.currentIndexChanged.connect(self.selectChange)
                     bd = []
@@ -78,7 +81,8 @@ class ModConfigDialog(QDialog):
                         b.addItem(str(o['description']))
                         bd.append(o['data'])
                     b.data = bd
-                    if self.getDictValue(op['options'][b.currentIndex()], 'hover'):
+                    if self.getDictValue(op['options'][b.currentIndex()],
+                                         'hover'):
                         b.setToolTip(op['options'][b.currentIndex()]['hover'])
                 else:
                     b = QLabel()
@@ -97,7 +101,8 @@ class ModConfigDialog(QDialog):
         return tc.get("TEMP", "cluster_index")
 
     def loadExistValue(self):
-        rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
+        rootdir = os.path.join(CLUSTER_DIR,
+                               "Cluster_" + self.getCurrentCluster())
         file = os.path.join(rootdir, "modoverrides.lua")
         if os.path.exists(file):
             f = open(file, 'r', encoding='utf-8')
@@ -119,9 +124,11 @@ class ModConfigDialog(QDialog):
 
         if self.moddir in self.allsavemoddict:
             if self.moddir in self.savemoddict:
-                self.updateComboxsValue(self.savemoddict[self.moddir]["configuration_options"])
+                self.updateComboxsValue(
+                    self.savemoddict[self.moddir]["configuration_options"])
             else:
-                self.updateComboxsValue(self.allsavemoddict[self.moddir]["configuration_options"])
+                self.updateComboxsValue(
+                    self.allsavemoddict[self.moddir]["configuration_options"])
         else:
             self.loadDefaultValue()
 
@@ -137,7 +144,8 @@ class ModConfigDialog(QDialog):
         for com in self.opcombox:
             index = 0
             for data in com.data:
-                if self.getDictValue(cdict, com.name) and cdict[com.name] == data:
+                if self.getDictValue(cdict,
+                                     com.name) and cdict[com.name] == data:
                     com.setCurrentIndex(index)
                     break
                 index += 1
@@ -161,7 +169,8 @@ class ModConfigDialog(QDialog):
                 else:
                     cdict[com.name] = com.data
             self.savemoddict[self.moddir]["configuration_options"] = cdict
-            rootdir = os.path.join(CLUSTER_DIR, "Cluster_" + self.getCurrentCluster())
+            rootdir = os.path.join(CLUSTER_DIR,
+                                   "Cluster_" + self.getCurrentCluster())
 
             file = os.path.join(rootdir, "modoverrides.lua")
             p1 = LuaTableParser()

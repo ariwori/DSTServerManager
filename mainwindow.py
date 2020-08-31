@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import qdarkstyle
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStatusBar, QProgressBar, QLabel, QGridLayout, QFrame, QVBoxLayout, QPushButton, QWidget, QStackedLayout, QSplitter, QSpacerItem, QSizePolicy, QMessageBox
+from PyQt5.QtWidgets import (QMainWindow, QDesktopWidget, QGridLayout, QFrame,
+                             QVBoxLayout, QPushButton, QWidget, QStackedLayout,
+                             QSplitter, QSpacerItem, QSizePolicy, QMessageBox)
 from PyQt5.QtCore import Qt
 from maintab import MainTab
 from settingswindow import SettingsWidget
@@ -153,19 +155,27 @@ class MainWindow(QMainWindow):
     # 存档设置
     def set_cluster(self):
         self.current_cluster_index = self.sender().index
-        self.tempconfig.set("TEMP", "cluster_index", str(self.current_cluster_index))
+        self.tempconfig.set("TEMP", "cluster_index",
+                            str(self.current_cluster_index))
         self.tempconfig.save(TEMP_FILE)
         self.refresh_cluster_btn_state(self.current_cluster_index)
         self.right_layout.setCurrentIndex(0)
         self.mk_cluster_dir()
-        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
-        self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
+        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(
+            self.current_cluster_folder, "cluster.ini")
+        self.cluster_tab.cluster_settings_tab.read_cluster_data(
+            self.cluster_tab.cluster_settings_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.setServerIP(
+            self.cluster_tab.cluster_settings_tab.masterip,
+            self.cluster_tab.cluster_settings_tab.getServerIP())
         self.cluster_tab.shard_settings_tab.initShardTab()
 
     def deleteCluster(self):
         cindex = self.current_cluster_index
-        delm = QMessageBox.warning(self, "删除警告", "你确定要删除存档槽" + str(cindex) + "?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        delm = QMessageBox.warning(self, "删除警告",
+                                   "你确定要删除存档槽" + str(cindex) + "?",
+                                   QMessageBox.Yes | QMessageBox.No,
+                                   QMessageBox.No)
         if delm == QMessageBox.Yes:
             sdir = os.path.join(CLUSTER_DIR, "Cluster_" + str(cindex))
             if os.path.exists(sdir):
@@ -173,14 +183,21 @@ class MainWindow(QMainWindow):
             self.right_layout.setCurrentIndex(0)
             self.mk_cluster_dir()
             self.cluster_tab.setCurrentIndex(0)
-            self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-            self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
-            self.cluster_tab.cluster_settings_tab.setServerIP(self.cluster_tab.cluster_settings_tab.masterip, self.cluster_tab.cluster_settings_tab.getServerIP())
+            self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(
+                self.current_cluster_folder, "cluster.ini")
+            self.cluster_tab.cluster_settings_tab.read_cluster_data(
+                self.cluster_tab.cluster_settings_tab.current_cluster_file)
+            self.cluster_tab.cluster_settings_tab.setServerIP(
+                self.cluster_tab.cluster_settings_tab.masterip,
+                self.cluster_tab.cluster_settings_tab.getServerIP())
             self.cluster_tab.shard_settings_tab.initShardTab()
-            QMessageBox.information(self, "删除完毕", "存档槽" + str(cindex) + "已删除并重置！", QMessageBox.Yes)
+            QMessageBox.information(self, "删除完毕",
+                                    "存档槽" + str(cindex) + "已删除并重置！",
+                                    QMessageBox.Yes)
 
     def mk_cluster_dir(self):
-        self.current_cluster_folder = os.path.join(CLUSTER_DIR, "Cluster_" + str(self.current_cluster_index))
+        self.current_cluster_folder = os.path.join(
+            CLUSTER_DIR, "Cluster_" + str(self.current_cluster_index))
         if not os.path.exists(self.current_cluster_folder):
             os.mkdir(self.current_cluster_folder)
 
@@ -188,8 +205,10 @@ class MainWindow(QMainWindow):
         self.mk_cluster_dir()
         self.right_layout.setCurrentIndex(0)
         self.refresh_cluster_btn_state(self.current_cluster_index)
-        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(self.current_cluster_folder, "cluster.ini")
-        self.cluster_tab.cluster_settings_tab.read_cluster_data(self.cluster_tab.cluster_settings_tab.current_cluster_file)
+        self.cluster_tab.cluster_settings_tab.current_cluster_file = os.path.join(
+            self.current_cluster_folder, "cluster.ini")
+        self.cluster_tab.cluster_settings_tab.read_cluster_data(
+            self.cluster_tab.cluster_settings_tab.current_cluster_file)
 
     def initDir(self):
         if not os.path.exists(ROOT_DIR):
@@ -206,7 +225,8 @@ class MainWindow(QMainWindow):
         self.initDir()
         self.tempconfig = GlobalConfig(TEMP_FILE)
         if os.path.exists(TEMP_FILE):
-            self.current_cluster_index = int(self.tempconfig.get("TEMP", "cluster_index"))
+            self.current_cluster_index = int(
+                self.tempconfig.get("TEMP", "cluster_index"))
         else:
             self.current_cluster_index = 1
         self.init_cluster_data(self.current_cluster_index)
@@ -215,4 +235,5 @@ class MainWindow(QMainWindow):
     def center(self):
         screen = QDesktopWidget().screenGeometry()
         size = self.geometry()
-        self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
+        self.move((screen.width() - size.width()) / 2,
+                  (screen.height() - size.height()) / 2)

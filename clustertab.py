@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # import qdarkstyle
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QRadioButton, QCheckBox, QComboBox, QStyledItemDelegate, QButtonGroup
+from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QVBoxLayout,
+                             QLabel, QLineEdit, QRadioButton, QCheckBox,
+                             QComboBox, QStyledItemDelegate, QButtonGroup)
 from globalvar import CONFIG_DIR
 import os
 from config import GlobalConfig
@@ -8,7 +10,6 @@ from settingswindow import SettingsWidget
 
 
 class ClusterWidget(QWidget):
-
     def __init__(self, parent=None):
         super(ClusterWidget, self).__init__(parent)
 
@@ -32,15 +33,23 @@ class ClusterWidget(QWidget):
         layout5 = QHBoxLayout()
         self.cluster_intention = QComboBox()
         self.cluster_intention.setItemDelegate(QStyledItemDelegate())
-        self.cluster_intention.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }")
+        self.cluster_intention.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }"
+        )
         self.cluster_intention_cn = ['休闲', '合作', '竞赛', '疯狂']
-        self.cluster_intention_value = ['social', 'cooperative', 'competitive', 'madness']
+        self.cluster_intention_value = [
+            'social', 'cooperative', 'competitive', 'madness'
+        ]
         self.cluster_intention.addItems(self.cluster_intention_cn)
         self.game_mode = QComboBox()
-        self.game_mode.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }")
+        self.game_mode.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 30px; min-width: 60px; }"
+        )
         self.game_mode.setItemDelegate(QStyledItemDelegate())
         self.game_mode_cn = ['无尽', '生存', '荒野', '熔炉', '暴食']
-        self.game_mode_value = ['endless', 'survival', 'wilderness', 'lavaarena', 'quagmire']
+        self.game_mode_value = [
+            'endless', 'survival', 'wilderness', 'lavaarena', 'quagmire'
+        ]
         self.game_mode.addItems(self.game_mode_cn)
         label3 = QLabel()
         label3.setText('游戏风格:')
@@ -115,7 +124,9 @@ class ClusterWidget(QWidget):
         label10.setText("主世界服务器:")
         label10.setFixedWidth(100)
         self.masterip = QComboBox()
-        self.masterip.setStyleSheet("QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }")
+        self.masterip.setStyleSheet(
+            "QComboBox QAbstractItemView::item { min-height: 25px; min-width: 100px; }"
+        )
         self.masterip.setItemDelegate(QStyledItemDelegate())
         layout11.addWidget(label10)
         layout11.addWidget(self.masterip)
@@ -146,9 +157,12 @@ class ClusterWidget(QWidget):
 
         self.setLayout(layout)
 
-        self.load_default_cluster_settings.clicked.connect(self.read_default_cluster_data)
-        self.set_default_cluster_settings.clicked.connect(self.write_to_default_cluster_data)
-        self.save_cluster_setttings.clicked.connect(self.write_curret_cluster_data)
+        self.load_default_cluster_settings.clicked.connect(
+            self.read_default_cluster_data)
+        self.set_default_cluster_settings.clicked.connect(
+            self.write_to_default_cluster_data)
+        self.save_cluster_setttings.clicked.connect(
+            self.write_curret_cluster_data)
 
         self.setServerIP(self.masterip, ip="127.0.0.1")
 
@@ -163,7 +177,7 @@ class ClusterWidget(QWidget):
         index = 0
         for slist in self.serverlist:
             if slist[0] != "":
-                combox.addItem(slist[0]+"@"+slist[1])
+                combox.addItem(slist[0] + "@" + slist[1])
             else:
                 combox.addItem(slist[1])
             if slist[1] == oldvalue:
@@ -193,26 +207,40 @@ class ClusterWidget(QWidget):
         self.write_cluster_data(self.current_cluster_file)
 
     def write_cluster_data(self, file):
-        self.cluster_config.set("STEAM", "steam_group_id", self.steam_group_id.text())
-        self.cluster_config.setboolean("STEAM", "steam_group_only", self.steam_group_only.isChecked())
-        self.cluster_config.setboolean("STEAM", "steam_group_admins", self.steam_group_admin.isChecked())
+        self.cluster_config.set("STEAM", "steam_group_id",
+                                self.steam_group_id.text())
+        self.cluster_config.setboolean("STEAM", "steam_group_only",
+                                       self.steam_group_only.isChecked())
+        self.cluster_config.setboolean("STEAM", "steam_group_admins",
+                                       self.steam_group_admin.isChecked())
 
         self.cluster_config.setboolean("GAMEPLAY", "pvp", self.pvp.isChecked())
-        self.cluster_config.set("GAMEPLAY", "game_mode", self.game_mode_value[self.game_mode.currentIndex()])
-        self.cluster_config.setboolean("GAMEPLAY", "pause_when_empty", self.pause_when_empty.isChecked())
-        self.cluster_config.setboolean("GAMEPLAY", "vote_enabled", self.vote.isChecked())
-        self.cluster_config.set("GAMEPLAY", "max_players", self.max_players.text())
+        self.cluster_config.set(
+            "GAMEPLAY", "game_mode",
+            self.game_mode_value[self.game_mode.currentIndex()])
+        self.cluster_config.setboolean("GAMEPLAY", "pause_when_empty",
+                                       self.pause_when_empty.isChecked())
+        self.cluster_config.setboolean("GAMEPLAY", "vote_enabled",
+                                       self.vote.isChecked())
+        self.cluster_config.set("GAMEPLAY", "max_players",
+                                self.max_players.text())
 
-        self.cluster_config.set("NETWORK", "cluster_name", self.cluster_name.text())
-        self.cluster_config.set("NETWORK", "cluster_description", self.cluster_description.text())
-        self.cluster_config.set("NETWORK", "cluster_intention", self.cluster_intention_value[self.cluster_intention.currentIndex()])
+        self.cluster_config.set("NETWORK", "cluster_name",
+                                self.cluster_name.text())
+        self.cluster_config.set("NETWORK", "cluster_description",
+                                self.cluster_description.text())
+        self.cluster_config.set(
+            "NETWORK", "cluster_intention", self.cluster_intention_value[
+                self.cluster_intention.currentIndex()])
         if self.zh_rbtn.isChecked():
             lang = "zh"
         else:
             lang = "en"
         self.cluster_config.set("NETWORK", "cluster_language", lang)
-        self.cluster_config.set("NETWORK", "whitelist_slots", self.white_players.text())
-        self.cluster_config.set("NETWORK", "cluster_password", self.password.text())
+        self.cluster_config.set("NETWORK", "whitelist_slots",
+                                self.white_players.text())
+        self.cluster_config.set("NETWORK", "cluster_password",
+                                self.password.text())
 
         self.cluster_config.set("SHARD", "master_ip", self.getServerIP())
 
@@ -226,24 +254,39 @@ class ClusterWidget(QWidget):
             file = os.path.join(CONFIG_DIR, "cluster.ini")
 
         self.cluster_config = GlobalConfig(file)
-        self.steam_group_id.setText(self.cluster_config.get("STEAM", "steam_group_id"))
-        self.steam_group_only.setChecked(self.cluster_config.getboolean("STEAM", "steam_group_only"))
-        self.steam_group_admin.setChecked(self.cluster_config.getboolean("STEAM", "steam_group_admins"))
+        self.steam_group_id.setText(
+            self.cluster_config.get("STEAM", "steam_group_id"))
+        self.steam_group_only.setChecked(
+            self.cluster_config.getboolean("STEAM", "steam_group_only"))
+        self.steam_group_admin.setChecked(
+            self.cluster_config.getboolean("STEAM", "steam_group_admins"))
 
         self.pvp.setChecked(self.cluster_config.getboolean("GAMEPLAY", "pvp"))
-        self.game_mode.setCurrentIndex(self.game_mode_value.index(self.cluster_config.get("GAMEPLAY", "game_mode")))
-        self.pause_when_empty.setChecked(self.cluster_config.getboolean("GAMEPLAY", "pause_when_empty"))
-        self.vote.setChecked(self.cluster_config.getboolean("GAMEPLAY", "vote_enabled"))
-        self.max_players.setText(self.cluster_config.get("GAMEPLAY", "max_players"))
+        self.game_mode.setCurrentIndex(
+            self.game_mode_value.index(
+                self.cluster_config.get("GAMEPLAY", "game_mode")))
+        self.pause_when_empty.setChecked(
+            self.cluster_config.getboolean("GAMEPLAY", "pause_when_empty"))
+        self.vote.setChecked(
+            self.cluster_config.getboolean("GAMEPLAY", "vote_enabled"))
+        self.max_players.setText(
+            self.cluster_config.get("GAMEPLAY", "max_players"))
 
-        self.cluster_name.setText(self.cluster_config.get("NETWORK", "cluster_name"))
-        self.cluster_description.setText(self.cluster_config.get("NETWORK", "cluster_description"))
-        self.cluster_intention.setCurrentIndex(self.cluster_intention_value.index(self.cluster_config.get("NETWORK", "cluster_intention")))
+        self.cluster_name.setText(
+            self.cluster_config.get("NETWORK", "cluster_name"))
+        self.cluster_description.setText(
+            self.cluster_config.get("NETWORK", "cluster_description"))
+        self.cluster_intention.setCurrentIndex(
+            self.cluster_intention_value.index(
+                self.cluster_config.get("NETWORK", "cluster_intention")))
         if self.cluster_config.get("NETWORK", "cluster_language") == "zh":
             self.zh_rbtn.setChecked(True)
         else:
             self.en_rbtn.setChecked(True)
-        self.white_players.setText(self.cluster_config.get("NETWORK", "whitelist_slots"))
-        self.password.setText(self.cluster_config.get("NETWORK", "cluster_password"))
+        self.white_players.setText(
+            self.cluster_config.get("NETWORK", "whitelist_slots"))
+        self.password.setText(
+            self.cluster_config.get("NETWORK", "cluster_password"))
 
-        self.setServerIP(self.masterip, self.cluster_config.get("SHARD", "master_ip"))
+        self.setServerIP(self.masterip,
+                         self.cluster_config.get("SHARD", "master_ip"))
