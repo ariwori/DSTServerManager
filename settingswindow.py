@@ -3,15 +3,13 @@ import os
 import sys
 import json
 import paramiko
-import subprocess
 from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, QWidget, QGroupBox,
-                             QSizePolicy, QSpacerItem, QApplication, QLabel,
+                             QSizePolicy, QSpacerItem, QLabel,
                              QLineEdit, QHBoxLayout, QCheckBox, QTableWidget,
                              QAbstractItemView, QTableWidgetItem, QMessageBox,
                              QHeaderView, QFileDialog)
-from PyQt5.QtCore import Qt, QThread
+from PyQt5.QtCore import Qt
 from serverdialog import ServerDialog
-from progressbar import ProgressBar
 from globalvar import USER_HOME, CLUSTER_DIR, ROOT_DIR
 
 
@@ -41,11 +39,20 @@ class SettingsWidget(QWidget):
         local_server_path_label.setText("本地服务端路径:")
         # local_server_path_label.setFixedWidth(105)
         self.local_server_path_lineEdit = QLineEdit()
+        self.local_server_path_lineEdit.setDisabled(True)
         self.local_server_path_btn = QPushButton()
         self.local_server_path_btn.setText("浏览")
+
+        server_betacode_label = QLabel()
+        server_betacode_label.setText("测试代码:")
+        self.server_betacode_lineEdit = QLineEdit()
+        self.server_betacode_lineEdit.setFixedWidth(80)
+
         path_widget2_layout.addWidget(local_server_path_label)
         path_widget2_layout.addWidget(self.local_server_path_lineEdit)
         path_widget2_layout.addWidget(self.local_server_path_btn)
+        path_widget2_layout.addWidget(server_betacode_label)
+        path_widget2_layout.addWidget(self.server_betacode_lineEdit)
 
         # Steamcmd路径
         path_widget4_layout = QHBoxLayout()
@@ -57,7 +64,7 @@ class SettingsWidget(QWidget):
         self.steamcmd_path_btn.setText("浏览")
 
         self.install_server_button = QPushButton()
-        self.install_server_button.setText("安装服务端")
+        self.install_server_button.setText("安装本地服务端")
 
         self.install_server_button.clicked.connect(self.install_server)
 
@@ -80,20 +87,9 @@ class SettingsWidget(QWidget):
         path_widget3_layout.addWidget(self.local_cluster_path_lineEdit)
         path_widget3_layout.addWidget(self.local_cluster_path_btn)
 
-        exe_V = QVBoxLayout()
-        exe_V.addLayout(path_widget1_layout)
-        exe_V.addLayout(path_widget2_layout)
+        path_settings_groupbox_layout.addLayout(path_widget1_layout)
+        path_settings_groupbox_layout.addLayout(path_widget2_layout)
 
-        self.move_mod_button = QPushButton()
-        self.move_mod_button.setFixedHeight(50)
-        self.move_mod_button.setText("从客户端复制\nMOD到服务端")
-        self.move_mod_button.clicked.connect(self.copy_mods)
-
-        sss = QHBoxLayout()
-        sss.addLayout(exe_V)
-        sss.addWidget(self.move_mod_button)
-
-        path_settings_groupbox_layout.addLayout(sss)
         path_settings_groupbox_layout.addLayout(path_widget4_layout)
         path_settings_groupbox_layout.addLayout(path_widget3_layout)
         path_settings_groupbox.setLayout(path_settings_groupbox_layout)
@@ -370,8 +366,8 @@ class SettingsWidget(QWidget):
         settings['servers'] = self.get_server_list()
         self.write_json_data(settings)
 
-    def getClientPath(self):
-        return self.local_client_path_lineEdit.text()
+    def getServerPath(self):
+        return self.local_server_path_lineEdit.text()
 
     def select_client_dir(self):
         client_dir = self.local_client_path_lineEdit.text()
@@ -459,29 +455,20 @@ class SettingsWidget(QWidget):
                 steamcmd_dir = steamcmd_dir[0].replace('/', '\\')
         if steamcmd_dir != "":
             self.steamcmd_path_lineEdit.setText(str(steamcmd_dir))
+            local_server_path = os.path.join(os.path.dirname(steamcmd_dir), "steamapps", "common", "Don't Starve Together Dedicated Server")
+            if self.local_server_path_lineEdit.text() == "":
+                self.local_server_path_lineEdit.setText(local_server_path)
 
     def install_server(self):
         if sys.platform == "win32":
             steamcmd = self.steamcmd_path_lineEdit.text()
             if steamcmd == "":
-                QMessageBox.warning(self, "警告", "请先设置SteamCMD路径！", QMessageBox.Yes)
+                QMessageBox.warning(self, "警告", "请先设置SteamCMD路径！",
+                                    QMessageBox.Yes)
                 return
             server_dir = self.local_server_path_lineEdit.text()
             if server_dir == "":
-                QMessageBox.warning(self, "警告", "请先设置服务端安装路径！", QMessageBox.Yes)
+                QMessageBox.warning(self, "警告", "请先设置服务端安装路径！",
+                                    QMessageBox.Yes)
                 return
-
-            subprocess.run(steamcmd)
-
-    def copy_mods(self):
-        # client_dir = self.local_client_path_lineEdit.text()
-        # server_dir = self.local_server_path_lineEdit.text()
-        # if client_dir != "" and server_dir != "" and os.path.exists(client_dir) and os.path.exists(server_dir):
-        #     distutils.dir_util.copy_tree(client_dir, server_dir)
-        self.ProgressBar = ProgressBar(1, 10000)
-        for i in range(1, 10000):
-            # time.sleep(0.05)
-            self.ProgressBar.setValue(i + 1)
-            QThread.msleep(10000)
-            QApplication.processEvents()
-            self.ProgressBar.close()
+            # cmdstr = steamcmd + " +login anonymous +app_update 343050 " + "-beta returnofthem " + "validate +quit"

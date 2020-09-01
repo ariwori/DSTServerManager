@@ -2,7 +2,8 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QTableWidget,
                              QVBoxLayout, QLabel, QCheckBox, QAbstractItemView,
                              QHeaderView, QMessageBox, QTableWidgetItem,
-                             QTextBrowser)
+                             QProgressDialog, QLineEdit, QTextBrowser)
+from PyQt5.QtCore import Qt
 from globalvar import CONFIG_DIR, CLUSTER_DIR, TEMP_FILE, ROOT_DIR
 import os
 import sys
@@ -24,7 +25,7 @@ class ModWidget(QWidget):
         allmodtablelayout = QVBoxLayout()
         modlayout.setContentsMargins(5, 0, 5, 0)
         self.allmodtable = QTableWidget()
-        self.allmodtable.setFixedWidth(350)
+        self.allmodtable.setFixedWidth(420)
         self.allmodtable.setColumnCount(4)
         # 禁止编辑
         self.allmodtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -46,7 +47,31 @@ class ModWidget(QWidget):
         btn = QPushButton()
         btn.setText("刷新列表")
         allmodtablelayout.addWidget(self.allmodtable)
-        allmodtablelayout.addWidget(btn)
+        move_mod_button = QPushButton()
+        move_mod_button.setText("从客户端复制MOD到服务端")
+        move_mod_button.clicked.connect(self.copy_mods)
+
+        hl1 = QHBoxLayout()
+        hl1.addWidget(btn)
+        hl1.addWidget(move_mod_button)
+        allmodtablelayout.addLayout(hl1)
+
+        hl2 = QHBoxLayout()
+
+        self.addmodid_lineEdit = QLineEdit()
+        self.addmodid_lineEdit.setPlaceholderText("请输入MODID")
+
+        add_mod_btn = QPushButton()
+        add_mod_btn.setText("添加MOD")
+        update_mod_btn = QPushButton()
+        update_mod_btn.setText("更新所有MOD")
+
+        hl2.addWidget(self.addmodid_lineEdit)
+        hl2.addWidget(add_mod_btn)
+        hl2.addWidget(update_mod_btn)
+
+        allmodtablelayout.addLayout(hl2)
+
         btn.clicked.connect(self.initData)
 
         modlayout.addLayout(allmodtablelayout)
@@ -97,7 +122,7 @@ class ModWidget(QWidget):
             return "1"
 
     def getModDir(self):
-        dirstr = SettingsWidget().getClientPath()
+        dirstr = SettingsWidget().getServerPath()
         if dirstr != "" and os.path.exists(dirstr):
             if sys.platform == "darwin":
                 dirstr = os.path.join(dirstr, "Contents")
@@ -214,7 +239,7 @@ class ModWidget(QWidget):
 
     def openModDir(self):
         if self.currentSelectMod == "":
-            path = ""
+            path = self.modrootdir
         else:
             path = os.path.join(self.modrootdir, self.currentSelectMod)
         if os.path.exists(path):
@@ -262,6 +287,24 @@ class ModWidget(QWidget):
                 f.write(data)
                 f.close()
 
+    def copy_mods(self):
+        num = 1000000
+        progress = QProgressDialog(self)
+        progress.setWindowTitle("请稍等")
+        progress.setLabelText("正在操作...")
+        progress.setCancelButtonText("取消")
+        progress.setMinimumDuration(1)
+        progress.setWindowModality(Qt.WindowModal)
+        progress.setRange(0, num)
+        for i in range(num):
+            progress.setValue(i)
+            if progress.wasCanceled():
+                QMessageBox.warning(self, "提示", "操作失败")
+                break
+        else:
+            progress.setValue(num)
+            QMessageBox.information(self, "提示", "操作成功")
+
     # 加载本地所有MOD进入列表
     def loadAllLoaclMod(self):
         self.allmodtable.clear()
@@ -295,5 +338,5 @@ class ModWidget(QWidget):
                     row += 1
         else:
             QMessageBox.warning(self, "错误警告",
-                                "客户端路径未设置或不正确，\n无法读取MOD，请到设置面板确认！",
+                                "本地端路径未设置或不正确，\n无法读取MOD，请到设置面板确认！",
                                 QMessageBox.Yes)
